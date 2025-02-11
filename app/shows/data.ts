@@ -1,5 +1,30 @@
 export const shows = [
   {
+    date: "2025-02-28",
+    title: "Tree Temple Artist Showcase: Ruh y Alma",
+    description:
+      "The Tree Temple is honored to welcome you to the next in our Artist Showcase series! This event is our opportunity to share the music we love, made by the friends we love, with the community we love. All friends are welcome to take part in this beautiful musical celebration. The performance will be followed by a very tasty open jam, so bring your instruments, your voices, and your hearts wide open.\n\nRuh y Alma is a musical duo that merges the sounds of sitar, piano, and world music beats. Drawing from their cultural heritages and life experiences, Sasha Bayan and William Cenoté craft compositions and improvisations inspired by Indian, Middle Eastern, and Latin music traditions. Central to their creative process is the belief in music’s therapeutic power, aiming to bring listeners along a journey of self-discovery and healing.",
+    venue: "Tree Temple",
+    address: "7045 Pinehaven Rd, Oakland, CA",
+    startTime: "19:15",
+    endTime: "23:30",
+    ticketLink: "https://partiful.com/e/90aTY0D9t4Ic3BzCg1VA",
+    note: "Tickets are $20-40, covering drinks and snacks, with proceeds going to the artists. If cost is prohibitive, please reach out. Arrive by 7:45 PM as music starts at 8:00 PM. Allow 20-30 minutes for parking, traffic, and walking to the house. Bring snacks to share, instruments, and an open heart!",
+  },
+  {
+    date: "2025-02-14",
+    title: "Music & Pole Jam: An Exhibition of Improvisation",
+    description:
+      "Experience the potent fusion of live music and freestyle pole artistry at Flux Vertical Theatre. This one-of-a-kind event brings together talented Bay Area musicians and pole dancers in a completely unscripted, improvised neo-soul / RnB jam session. Watch as movement and melody intertwine in real-time, creating a completely unique performance every time.",
+    venue: "Flux Vertical Theatre",
+    address: "811 University Ave Suite 105, Berkeley, CA 94710",
+    startTime: "21:30",
+    endTime: "TBD",
+    ticketLink: "https://musicpole-jam.secretparty.io/",
+    note: "Early Bird Tickets are $20 (sale ends Jan 22). Regular tickets are $30.",
+  },
+
+  {
     date: "2024-12-31",
     title: "Solo Sitar @ The Laundry",
     description:
