@@ -1,5 +1,17 @@
 export const shows = [
   {
+    date: "2025-02-13",
+    title: "Valentines Gathering❤️ featuring Sasha Bayan",
+    description:
+      "Join us for a majestic and heartfelt evening of sensory delights, cuddles, sound healing, sacred cacao ceremony, snuggles, delectable desserts, and transcendent sitar performances by Sasha Bayan.",
+    venue: "Private Home",
+    address: "Sausalito, CA",
+    startTime: "18:30",
+    endTime: "TBD",
+    ticketLink: "https://partiful.com/e/OhiG68Enn9Ttpl4NCNId",
+    note: "Invite only. Please secure your space with a $44 Venmo payment. Snuggly and sexy attire is encouraged.",
+  },
+  {
     date: "2025-02-28",
     title: "Tree Temple Artist Showcase: Ruh y Alma",
     description:
