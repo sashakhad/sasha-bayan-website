@@ -1,5 +1,17 @@
 export const shows = [
   {
+    date: "2025-03-08",
+    title: "Sasha Bayan Live at Playhouse MIRAJ",
+    description:
+      "Join Sasha Bayan for an electrifying night of Indo house and techno at Bergerac SF, where he will blend live sitar with DJ sets in homage to India's 'father of acid house,' Charanjit Singh. Expect hypnotic acid synths, deep rhythms, and live instrumentation in a high-energy rave experience. Proceeds go to LA wildfire relief.",
+    venue: "Bergerac SF",
+    address: "316 11th St, San Francisco, CA 94103, USA",
+    startTime: "21:00",
+    endTime: "02:00",
+    ticketLink: "https://posh.vip/e/miraj",
+    note: "Doors open at 9:00 PM. Daylight savings begins on 03/09, so the event officially ends at 2:00 AM. Early bird tickets start at $18.",
+  },
+  {
     date: "2025-02-13",
     title: "Valentines Gathering❤️ featuring Sasha Bayan",
     description:
@@ -8,7 +20,7 @@ export const shows = [
     address: "Sausalito, CA",
     startTime: "18:30",
     endTime: "TBD",
-    ticketLink: "https://partiful.com/e/OhiG68Enn9Ttpl4NCNId",
+    ticketLink: "", // "https://partiful.com/e/OhiG68Enn9Ttpl4NCNId",
     note: "Invite only. Please secure your space with a $44 Venmo payment. Snuggly and sexy attire is encouraged.",
   },
   {
