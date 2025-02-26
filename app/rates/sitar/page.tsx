@@ -33,6 +33,12 @@ const SitarRates = () => {
           These rates reflect the time and effort involved in preparing for and
           performing at your event, including setup and travel.
         </p>
+        <p className="mb-4">
+          Travel costs, including transportation, parking, and lodging (if
+          applicable), are expected to be covered for performances outside the
+          Bay Area. I do not typically pay out of pocket to perform at events
+          and appreciate hosts ensuring that travel logistics are accounted for.
+        </p>
         <p className="mb-4 italic">
           Note: I do not typically offer lower rates for shorter performances,
           as the preparation and effort required remain the same regardless of
