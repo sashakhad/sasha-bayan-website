@@ -1,5 +1,19 @@
 export const shows = [
   {
+    date: "2025-03-02",
+    title: "Zenses Wellness Pop-Up Event: A Journey to Wellness",
+    description:
+      "Join us for an immersive pop-up designed to nourish your mind, body, and soul in a visually stunning, tranquil space. Experience movement, sound healing, and intention-setting sessions, featuring live sitar performances, original compositions, and improvisations by Sasha Bayan.",
+    venue: "Zenses Yoga Immersive",
+    address: "540 Howard St, San Francisco, CA 94105",
+    startTime: "12:00",
+    endTime: "6:00",
+    ticketLink:
+      "https://www.eventbrite.com/e/zenses-wellness-pop-up-event-a-journey-to-wellness-tickets-1220207717129",
+    note: "Sitar Performance from 3-4pm.",
+  },
+
+  {
     date: "2025-03-08",
     title: "Sasha Bayan Live at Playhouse MIRAJ",
     description:
