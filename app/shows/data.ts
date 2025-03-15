@@ -1,5 +1,17 @@
 export const shows = [
   {
+    date: "2025-04-24",
+    title: "Private Festival - Sasha Bayan on Sitar",
+    description:
+      "Sasha Bayan will be performing at an intimate private festival in Central California, bringing his signature sitar sounds to a weekend of music, connection, and nature. Expect a unique blend of improvisation, world music fusion, and meditative soundscapes.",
+    venue: "Private Location",
+    address: "Central California",
+    startTime: "TBD",
+    endTime: "TBD",
+    ticketLink: "Private Event",
+    note: "This is a private gathering. Details will be shared with invited guests only.",
+  },
+  {
     date: "2025-03-30",
     title: "Sitar + Beats: Ruh Y Alma Live",
     description:
