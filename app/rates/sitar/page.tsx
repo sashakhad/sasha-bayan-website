@@ -26,7 +26,7 @@ const SitarRates = () => {
             <strong>Private Events:</strong> $450 - $750
           </li>
           <li>
-            <strong>Corporate Events:</strong> $1000 - $2500
+            <strong>Festivals + Corporate Events:</strong> $1000 - $2500
           </li>
         </ul>
         <p className="mb-4">
