@@ -1,5 +1,18 @@
 export const shows = [
   {
+    date: "2025-03-30",
+    title: "Sitar + Beats: Ruh Y Alma Live",
+    description:
+      "Join us for an intimate evening of music as Sasha Bayan and William Cenoté of Ruh Y Alma blend sitar, jazz piano, and modern beats in a unique sonic experience. Inspired by Indian, Middle Eastern, and Latin music traditions, their performance promises a journey of self-discovery and healing through sound.",
+    venue: "Private Residence",
+    address: "489 Teresita Blvd, San Francisco, CA",
+    startTime: "16:00",
+    endTime: "18:30",
+    ticketLink:
+      "https://partiful.com/e/f8NFnffOEpwmlmCTPmf7?accept-cohost=a714f077-b0dc-474c-842c-40840fc91a6a",
+    note: "Suggested donation: $25+. The music set will start around 4:30 PM and last 30-60 minutes. Tea and snacks provided, but feel free to bring something to share. Seating is on the floor—wear something comfortable!",
+  },
+  {
     date: "2025-03-02",
     title: "Zenses Wellness Pop-Up Event: A Journey to Wellness",
     description:
@@ -13,18 +26,6 @@ export const shows = [
     note: "Sitar Performance from 3-4pm.",
   },
 
-  {
-    date: "2025-03-08",
-    title: "Sasha Bayan Live at Playhouse MIRAJ",
-    description:
-      "Join Sasha Bayan for an electrifying night of Indo house and techno at Bergerac SF, where he will blend live sitar with DJ sets in homage to India's 'father of acid house,' Charanjit Singh. Expect hypnotic acid synths, deep rhythms, and live instrumentation in a high-energy rave experience. Proceeds go to LA wildfire relief.",
-    venue: "Bergerac SF",
-    address: "316 11th St, San Francisco, CA 94103, USA",
-    startTime: "21:00",
-    endTime: "02:00",
-    ticketLink: "https://posh.vip/e/miraj",
-    note: "Doors open at 9:00 PM. Daylight savings begins on 03/09, so the event officially ends at 2:00 AM. Early bird tickets start at $18.",
-  },
   {
     date: "2025-02-13",
     title: "Valentines Gathering❤️ featuring Sasha Bayan",
