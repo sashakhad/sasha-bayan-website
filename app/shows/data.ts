@@ -1,9 +1,21 @@
 export const shows = [
   {
+    date: "2025-05-16",
+    title: "Private Festival - Sasha Bayan on Sitar",
+    description:
+      "Sasha Bayan will be performing at an intimate private festival in Northern California, bringing his signature sitar sounds to a weekend of music, connection, and nature. Expect a unique blend of improvisation, world music fusion, and meditative soundscapes.",
+    venue: "Private Location",
+    address: "Northern California",
+    startTime: "TBD",
+    endTime: "TBD",
+    ticketLink: "N/A",
+    note: "This is a private gathering. Details will be shared with invited guests only.",
+  },
+  {
     date: "2025-04-24",
     title: "Private Festival - Sasha Bayan on Sitar",
     description:
-      "Sasha Bayan will be performing at an intimate private festival in Central California, bringing his signature sitar sounds to a weekend of music, connection, and nature. Expect a unique blend of improvisation, world music fusion, and meditative soundscapes.",
+      "Join us for a special set at an intimate private festival as Sasha Bayan and William Cenoté of Ruh Y Alma blend sitar, jazz piano, and modern beats in a unique sonic experience. Inspired by Indian, Middle Eastern, and Latin music traditions, their performance promises a journey of self-discovery and healing through sound—perfectly attuned to a weekend of nature, connection, and community.",
     venue: "Private Location",
     address: "Central California",
     startTime: "TBD",
