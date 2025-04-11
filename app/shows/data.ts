@@ -1,5 +1,18 @@
 export const shows = [
   {
+    date: "2025-05-14",
+    title: "Tuning the Heart: Cacao & Sitar with Sasha Bayan",
+    description:
+      "Join Sasha Bayan and Deni Slehiman for a heart-centered evening of cacao, breathwork, and meditative sound at Alchemy Springs. This special Wellness Wednesday session, 'Tuning the Heart,' features Sasha Bayan’s soulful sitar playing—blending Indian classical traditions with improvisation and original compositions. The experience begins with cacao and gentle movement, followed by deep listening and connection in a sacred communal space.",
+    venue: "Alchemy Springs",
+    address: "939 Post Street, San Francisco, CA 94109",
+    startTime: "17:30",
+    endTime: "21:00",
+    ticketLink:
+      "https://momence.com/Wellness-Wednesdays/Wellness-Wednesday-%7C-Tuning-the-Heart/110702632",
+    note: "Use code 'Community' for 25% off if tickets aren’t moving. Bring your own towels, robe, and sandals. Temporary changing rooms and open-air showers available. Swimsuits required throughout your visit.",
+  },
+  {
     date: "2025-05-16",
     title: "Private Festival - Sasha Bayan on Sitar",
     description:
