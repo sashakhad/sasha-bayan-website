@@ -1,5 +1,17 @@
 export const shows = [
   {
+    date: "2025-05-22",
+    title: "Sasha Bayan with Ruh y Alma at The Portal for Summit",
+    description:
+      "Join Sasha Bayan and Ruh y Alma for a special evening performance at The Portal in Mill Valley, presented in collaboration with Summit. This intimate set in the Lounge space will feature Sasha's evocative sitar playing, weaving together original compositions, improvisation, and deep listening. The performance is part of a private gathering curated by Summit, bringing together a community of creatives and visionaries for a night of resonance and connection.",
+    venue: "The Portal",
+    address: "401 Miller Ave, Mill Valley, CA 94941",
+    startTime: "19:00",
+    endTime: "20:00",
+    ticketLink: "N/A",
+    note: "Private Summit event at The Portal. No ticket link available. Full A/V setup provided on site.",
+  },
+  {
     date: "2025-05-14",
     title: "Tuning the Heart: Cacao & Sitar with Sasha Bayan",
     description:
