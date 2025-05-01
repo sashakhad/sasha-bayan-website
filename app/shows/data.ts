@@ -8,7 +8,6 @@ export const shows = [
     address: "775 Valencia St, San Francisco, CA 94110",
     startTime: "18:00",
     endTime: "21:00",
-    ticketLink: "N/A",
     note: "No cover charge. Seating is first-come, first-served. For more information, visit https://www.curiobarsf.com/",
   },
   {
@@ -20,7 +19,6 @@ export const shows = [
     address: "401 Miller Ave, Mill Valley, CA 94941",
     startTime: "19:00",
     endTime: "20:00",
-    ticketLink: "N/A",
     note: "Private Summit event at The Portal. No ticket link available. Full A/V setup provided on site.",
   },
   {
@@ -45,7 +43,6 @@ export const shows = [
     address: "Northern California",
     startTime: "TBD",
     endTime: "TBD",
-    ticketLink: "N/A",
     note: "This is a private gathering. Details will be shared with invited guests only.",
   },
   {
