@@ -1,5 +1,17 @@
 export const shows = [
   {
+    date: "2025-05-03",
+    title: "Ruh y Alma Live at Curio",
+    description:
+      "Join Ruh y Alma for an evening of soulful world music, featuring Sasha Bayan on sitar and guitar. Experience a fusion of original compositions and improvisations that transcend cultural boundaries.",
+    venue: "Curio",
+    address: "775 Valencia St, San Francisco, CA 94110",
+    startTime: "18:00",
+    endTime: "21:00",
+    ticketLink: "N/A",
+    note: "No cover charge. Seating is first-come, first-served. For more information, visit https://www.curiobarsf.com/",
+  },
+  {
     date: "2025-05-22",
     title: "Sasha Bayan with Ruh y Alma at The Portal for Summit",
     description:
