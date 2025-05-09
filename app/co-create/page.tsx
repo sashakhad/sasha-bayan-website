@@ -5,7 +5,7 @@ export default function InspirePage() {
     <div className="flex items-center justify-center py-8">
       <iframe
         src="https://docs.google.com/forms/d/e/1FAIpQLSdmbaqEl1w2akx0bc8dBdM6G6sJwMBcKWjyWrUd1D84EI1QVQ/viewform?embedded=true"
-        width="640"
+        width="400"
         height="900"
       >
         Loading…
