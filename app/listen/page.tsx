@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react";
 
 const tracks = [
   {
-    title: "Chariot 2",
+    title: "Chariot II",
     src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/chariot-2.mp3",
   },
   {
@@ -32,7 +32,7 @@ const tracks = [
     src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/watermelon.mp3",
   },
   {
-    title: "Xerxces",
+    title: "Xerxes",
     src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/xerxces.mp3",
   },
   {
