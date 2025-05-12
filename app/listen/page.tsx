@@ -4,16 +4,80 @@ import { useState, useRef, useEffect } from "react";
 
 const tracks = [
   {
+    title: "Anchorage",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/anchorage.mp3",
+  },
+  {
+    title: "Baklava",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/baklava.mp3",
+  },
+  {
     title: "Chariot II",
     src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/chariot-2.mp3",
   },
   {
+    title: "Delilah",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/delilah.mp3",
+  },
+  {
+    title: "Eugene",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/eugene.mp3",
+  },
+  {
+    title: "Firuz",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/firuz.mp3",
+  },
+  {
+    title: "Green Tea",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/green-tea.mp3",
+  },
+  {
+    title: "Hex",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/hex.mp3",
+  },
+  {
+    title: "Ion",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/ion.mp3",
+  },
+  {
     title: "Jojo",
-    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/Jojo.mp3",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/jojo.mp3",
+  },
+  {
+    title: "Kelvin",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/kelvin.mp3",
+  },
+  {
+    title: "Lisan",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/lisan.mp3",
   },
   {
     title: "Mether",
     src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/mether.mp3",
+  },
+  {
+    title: "Nile",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/nile.mp3",
+  },
+  {
+    title: "Oja",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/oja.mp3",
+  },
+  {
+    title: "Public Garden",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/public-garden.mp3",
+  },
+  {
+    title: "Quarry",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/quarry.mp3",
+  },
+  {
+    title: "Returning",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/returning.mp3",
+  },
+  {
+    title: "Snausage",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/snausage.mp3",
   },
   {
     title: "Talisman",
