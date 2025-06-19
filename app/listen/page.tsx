@@ -8,6 +8,14 @@ const day1 = [
     src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/anchorage.mp3",
   },
   {
+    title: "Chariot I",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/chariot-take-1.mp3",
+  },
+  {
+    title: "Chariot I (Take 2)",
+    src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/chariot-take-2.mp3",
+  },
+  {
     title: "Baklava",
     src: "https://sasha-sam-tracks.s3.us-east-1.amazonaws.com/baklava.mp3",
   },
