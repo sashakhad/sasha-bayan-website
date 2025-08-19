@@ -24,6 +24,25 @@ const formatTime = (time: string): string => {
   }
 };
 
+const isValidUrl = (url: string | undefined): boolean => {
+  if (!url || typeof url !== 'string') return false;
+  
+  const invalidValues = ['TBD', 'N/A', 'Private Event', ''];
+  if (invalidValues.includes(url.trim())) return false;
+  
+  try {
+    new URL(url);
+    return url.startsWith('http://') || url.startsWith('https://');
+  } catch {
+    return false;
+  }
+};
+
+const isValidEndTime = (endTime: string | undefined): boolean => {
+  if (!endTime || typeof endTime !== 'string') return false;
+  return endTime.trim() !== 'TBD';
+};
+
 const ShowCard: React.FC<ShowCardProps> = ({
   date,
   title,
@@ -49,9 +68,9 @@ const ShowCard: React.FC<ShowCardProps> = ({
             <h2 className="text-2xl font-bold text-dark">{title}</h2>
           </div>
 
-          {ticketLink ? (
+          {isValidUrl(ticketLink) ? (
             <div className="flex gap-3">
-              <Link href={ticketLink || "#"} target="_blank">
+              <Link href={ticketLink!} target="_blank">
                 <button className="rounded-full bg-primary px-4 py-3 text-sm hover:bg-gray-300">
                   Get tickets
                 </button>
@@ -68,7 +87,7 @@ const ShowCard: React.FC<ShowCardProps> = ({
           </div>
           <p className="font-bold">
             {formatTime(startTime)}
-            {endTime ? ` - ${formatTime(endTime)}` : ""}
+            {isValidEndTime(endTime) ? ` - ${formatTime(endTime!)}` : ""}
           </p>
           {note && <p>{note}</p>}
           <p>{description}</p>
