@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import dotenv from "dotenv";
-import { generateShowNewsletter } from "./generateShowNewsletter.mjs";
+import { generateShowNewsletter } from "./generateShowNewsletter";
 
 dotenv.config({ path: ".env.local" });
 

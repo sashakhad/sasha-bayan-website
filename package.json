@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "newsletter:generate": "npx tsx scripts/newsletter/generateShowNewsletter.ts",
-    "newsletter:test": "npx tsx scripts/newsletter/testShowNewsletter.mjs"
+    "newsletter:test": "npx tsx scripts/newsletter/testShowNewsletter.ts"
   },
   "dependencies": {
     "@react-email/components": "^0.3.2",
