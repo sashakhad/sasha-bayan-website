@@ -223,4 +223,59 @@ export const shows = [
     ticketLink:
       "https://momence.com/Wellness-Wednesdays/Wellness-Wednesday-%7C-Yoga-with-Sitar/108500900?skipPreview=true",
   },
+  {
+    date: "2025-08-22",
+    title: "Private Event – Solo Sitar with Sasha Bayan",
+    description: "Sasha Bayan performs a solo sitar set featuring original compositions and improvisation at a private event.",
+    venue: "Private Event",
+    address: "N/A",
+    startTime: "19:30",
+    endTime: "21:30",
+    ticketLink: "N/A",
+    note: "Private event – not open to the public."
+  },
+  {
+    date: "2025-08-29",
+    title: "High Tide & Sasha Bayan at Wyldflowr Arts",
+    description: "Join High Tide featuring Sasha Bayan on sitar for an evening of immersive grooves and improvisational soundscapes at Wyldflowr Arts.",
+    venue: "Wyldflowr Arts",
+    address: "1250 Missouri St, San Francisco, CA 94107",
+    startTime: "20:00",
+    endTime: "TBD",
+    ticketLink: "TBD",
+    note: "Presented by Wyldflowr. Time subject to slight change."
+  },
+  {
+    date: "2025-08-30",
+    title: "Sasha Bayan: Solo Sitar at York Street Collective",
+    description: "Experience Sasha Bayan live at York Street Collective in the Mission with a solo sitar performance blending original compositions, improvisation, and world music traditions.",
+    venue: "York Street Collective",
+    address: "1100 Valencia St, San Francisco, CA 94110",
+    startTime: "19:30",
+    endTime: "21:30",
+    ticketLink: "TBD",
+    note: "Evening event at the York Street Collective space. All ages welcome."
+  },
+  {
+    date: "2025-09-05",
+    title: "High Tide & Sasha Bayan at York Street Collective",
+    description: "High Tide returns to York Street Collective with Sasha Bayan on sitar, fusing worl music textures and vibrant improvisation in a unique Mission setting.",
+    venue: "York Street Collective",
+    address: "1100 Valencia St, San Francisco, CA 94110",
+    startTime: "19:30",
+    endTime: "21:00",
+    ticketLink: "TBD",
+    note: "Join us for an intimate High Tide set at York Street Collective."
+  },
+  {
+    date: "2025-09-21",
+    title: "Artist Residency – Private Castle Event in France",
+    description: "Sasha Bayan appears as a distinguished artist-in-residence for a private castle gathering in France, offering solo sitar performances, original compositions, and improvisational sessions throughout the week.",
+    venue: "Private Castle Residence",
+    address: "France (exact location confidential)",
+    startTime: "TBD",
+    endTime: "TBD",
+    ticketLink: "N/A",
+    note: "Private multi-day event – Sept 21–26, not open to the public."
+  },
 ];
