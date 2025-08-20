@@ -195,41 +195,9 @@ function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
 
   if (upcomingShows.length === 1) {
     const show = upcomingShows[0];
-    if (show.venue.toLowerCase().includes("private")) {
-      intro = `Hey folks,\n\nI've got a private event coming up that I'm pretty stoked about. ${
-        show.title
-      } is happening ${formatDate(
-        show.date,
-      )} at a private location. These intimate gatherings always create such unique musical moments.`;
-    } else if (show.description?.toLowerCase().includes("wellness")) {
-      intro = `Hey hey,\n\nI'm excited to share a wellness-focused musical experience! ${
-        show.title
-      } combines healing sounds with wellness practices on ${formatDate(
-        show.date,
-      )} at ${
-        show.venue
-      }. Perfect for anyone looking to nourish both body and soul.`;
-    } else {
-      intro = `Hey folks,\n\nI'm looking forward to this one! ${
-        show.title
-      } is happening ${formatDate(show.date)} at ${show.venue}. ${
-        show.description
-          ? show.description.substring(0, 100) + "..."
-          : "This promises to be an incredible evening of music and connection."
-      }`;
-    }
+    intro = `Hey music lovers,\n\nGot ${upcomingShows.length} show coming up this week. ${show.title} is happening ${formatDate(show.date)}. Check it out below!`;
   } else {
-    if (hasWellnessEvents && hasPublicVenues) {
-      intro = `Hey folks,\n\nI've got ${upcomingShows.length} diverse shows lined up this week — some healing wellness sessions, some bigger public performances. Details are below if you wanna come hang.`;
-    } else if (hasWellnessEvents) {
-      intro = `Hey hey,\n\nI'm out in the wild with ${upcomingShows.length} wellness-focused events this week. These blend healing practices with live music for a truly transformative experience. Scroll down and you'll see what's what.`;
-    } else if (hasPrivateEvents && hasPublicVenues) {
-      intro = `Hey folks,\n\nCouple shows this week I'm stoked about — some small and cozy private gatherings, some bigger and louder public performances. Details are below if you wanna come hang.`;
-    } else if (hasPrivateEvents) {
-      intro = `Hey hey,\n\nI'm hosting ${upcomingShows.length} intimate private gatherings this week. These exclusive settings offer a personal connection to the music. Scroll down and you'll see what's what.`;
-    } else {
-      intro = `Hey folks,\n\nI'm bringing ${upcomingShows.length} unique performances this week, each with its own blend of sitar, world music, and improvisation. Details are below if you wanna come hang.`;
-    }
+    intro = `Hey music lovers,\n\nGot ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, mostly around California. Scroll down to see what's happening!`;
   }
 
   return intro;
