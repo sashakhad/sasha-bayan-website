@@ -2,11 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import * as React from "react";
 import ShowNewsletterEmail from "../../../components/emails/ShowNewsletterEmail";
-import {
-  loadShowNewsletter,
-  saveShowNewsletter,
-  showNewsletterExists,
-} from "../../../../lib/redis-storage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -59,18 +54,6 @@ function getDateRange(testMode = false) {
   };
 }
 
-async function getNewsletter(newsletterId: string) {
-  try {
-    return await loadShowNewsletter(newsletterId);
-  } catch (error) {
-    return null;
-  }
-}
-
-async function saveNewsletterData(newsletter: any): Promise<void> {
-  await saveShowNewsletter(newsletter.id, newsletter);
-}
-
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get("authorization");
@@ -102,33 +85,15 @@ export async function GET(request: NextRequest) {
 
     const url = new URL(request.url);
     const testMode = url.searchParams.get("test") === "true";
-    const forceRegenerate = url.searchParams.get("force") === "true";
 
     const dateRange = getDateRange(testMode);
     const newsletterId = `${dateRange.start}-to-${dateRange.end}`;
 
     console.log(
-      `Cron job triggered for show newsletter: ${newsletterId}${forceRegenerate ? " (FORCE MODE)" : ""}${testMode ? " (TEST MODE)" : ""}`
+      `Cron job triggered for show newsletter: ${newsletterId}${testMode ? " (TEST MODE)" : ""}`
     );
 
-    const existingNewsletter = await getNewsletter(newsletterId);
-    if (existingNewsletter && existingNewsletter.sentAt && !forceRegenerate) {
-      console.log(
-        `Newsletter ${newsletterId} already sent at ${existingNewsletter.sentAt}`
-      );
-      return NextResponse.json({
-        success: true,
-        message: "Newsletter already sent",
-        newsletterId,
-        sentAt: existingNewsletter.sentAt,
-      });
-    }
-
-    if (forceRegenerate && existingNewsletter) {
-      console.log(`Force regenerating newsletter: ${newsletterId}`);
-    }
-
-    console.log(`Starting direct newsletter generation for ${newsletterId}`);
+    console.log(`Starting newsletter generation for ${newsletterId}`);
 
     const { generateShowNewsletter } = await import(
       "../../../../scripts/newsletter/generateShowNewsletter"
@@ -138,7 +103,6 @@ export async function GET(request: NextRequest) {
     const newsletter = await generateShowNewsletter(
       dateRange.start,
       dateRange.end,
-      forceRegenerate,
       testMode
     );
     const generationTime = Date.now() - generationStart;
@@ -155,15 +119,7 @@ export async function GET(request: NextRequest) {
 
     console.log(`Newsletter generation completed in ${generationTime}ms`);
 
-    const finalNewsletter = await getNewsletter(newsletterId);
-    if (!finalNewsletter) {
-      return NextResponse.json(
-        { error: "Failed to retrieve generated newsletter" },
-        { status: 500 }
-      );
-    }
-
-    if (!finalNewsletter.upcomingShows || finalNewsletter.upcomingShows.length === 0) {
+    if (!newsletter.upcomingShows || newsletter.upcomingShows.length === 0) {
       return NextResponse.json(
         { error: "Newsletter has no shows - refusing to send" },
         { status: 400 }
@@ -176,14 +132,14 @@ export async function GET(request: NextRequest) {
     const fromName = "Sasha Bayan Shows";
 
     const subject =
-      finalNewsletter.themes && finalNewsletter.themes.length > 0
-        ? `Sasha Bayan Shows: ${finalNewsletter.themes.join(", ")}`
-        : finalNewsletter.dateRange
-          ? `Sasha Bayan Shows - ${finalNewsletter.dateRange.start} to ${finalNewsletter.dateRange.end}`
-          : `Sasha Bayan Shows - ${finalNewsletter.id}`;
+      newsletter.themes && newsletter.themes.length > 0
+        ? `Sasha Bayan Shows: ${newsletter.themes.join(", ")}`
+        : newsletter.dateRange
+          ? `Sasha Bayan Shows - ${newsletter.dateRange.start} to ${newsletter.dateRange.end}`
+          : `Sasha Bayan Shows - ${newsletter.id}`;
 
     const emailReact = React.createElement(ShowNewsletterEmail, {
-      newsletter: finalNewsletter,
+      newsletter: newsletter,
     });
 
     const audienceId = process.env.RESEND_AUDIENCE_ID!;
@@ -198,7 +154,7 @@ export async function GET(request: NextRequest) {
       audienceId,
       from: `${fromName} <${fromEmail}>`,
       subject,
-      name: `${subject} (${finalNewsletter.dateRange.start} to ${finalNewsletter.dateRange.end})`,
+      name: `${subject} (${newsletter.dateRange.start} to ${newsletter.dateRange.end})`,
       react: emailReact,
     });
 
@@ -214,18 +170,14 @@ export async function GET(request: NextRequest) {
 
     await resend.broadcasts.send(broadcastResponse.data.id);
 
-    finalNewsletter.sentAt = new Date().toISOString();
-    await saveNewsletterData(finalNewsletter);
-
     return NextResponse.json({
       success: true,
       message: "Show newsletter generated and sent successfully",
       newsletterId,
       broadcastId: broadcastResponse.data.id,
-      sentAt: finalNewsletter.sentAt,
       generationTime,
-      showsCount: finalNewsletter.upcomingShows.length,
-      futureShowsCount: finalNewsletter.futureShows?.length || 0,
+      showsCount: newsletter.upcomingShows.length,
+      futureShowsCount: newsletter.futureShows?.length || 0,
     });
   } catch (error) {
     console.error("Cron job error:", error);

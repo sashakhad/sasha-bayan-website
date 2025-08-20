@@ -30,7 +30,6 @@ async function testNewsletter() {
     const newsletter = await generateShowNewsletter(
       dateRange.start,
       dateRange.end,
-      true, // force regenerate
       true  // test mode
     );
     

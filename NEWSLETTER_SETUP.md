@@ -26,16 +26,7 @@ CRON_SECRET=your-secret-here
 BASE_URL=https://your-domain.com
 ```
 
-### Optional Variables (Redis/Upstash)
 
-```bash
-# Upstash Redis Configuration (optional - will fallback to filesystem)
-KV_URL=your_kv_url_here
-KV_REST_API_URL=your_kv_rest_api_url_here
-KV_REST_API_TOKEN=your_kv_rest_api_token_here
-KV_REST_API_READ_ONLY_TOKEN=your_kv_rest_api_read_only_token_here
-REDIS_URL=your_redis_url_here
-```
 
 ## Setup Steps
 
@@ -53,12 +44,7 @@ REDIS_URL=your_redis_url_here
 4. Set `TEST_EMAIL` to your email address for testing
 5. For production, you'll need to set up an audience and add `RESEND_AUDIENCE_ID`
 
-### 3. Upstash Redis (Optional)
 
-1. Go to [upstash.com](https://upstash.com)
-2. Create a Redis database
-3. Copy the connection details to your `.env.local`
-4. If not set, the system will fallback to filesystem storage
 
 ## Testing Commands
 
@@ -124,18 +110,14 @@ The test scripts will tell you exactly which variables are missing.
 - Check your OpenAI billing/credits
 - Ensure you have access to GPT-4o
 
-### Redis Errors
 
-- If Redis fails, the system will automatically fallback to filesystem
-- Check your Upstash Redis credentials
-- Verify your Redis database is active
 
-## File Structure
+## How It Works
 
-The newsletter system will create these directories if Redis is not available:
-
-- `data/newsletters/` - Newsletter JSON files
-- `data/` - Tracking and counter data
+The newsletter system is now completely stateless:
+- **No storage needed** - generates and sends in one go
+- **No Redis required** - works perfectly on Vercel
+- **No filesystem writes** - completely serverless-friendly
 
 ## Production Deployment
 
@@ -143,4 +125,4 @@ For production on Vercel:
 
 1. Add all environment variables to your Vercel project settings
 2. The cron job will run automatically based on your `vercel.json` configuration
-3. Redis is recommended for production to avoid filesystem limitations
+3. **No additional infrastructure needed** - completely serverless

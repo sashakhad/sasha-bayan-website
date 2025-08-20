@@ -4,16 +4,8 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import { openai } from "../../lib/openai-client";
-import {
-  loadShowNewsletter,
-  saveShowNewsletter,
-  showNewsletterExists,
-  loadShowTracking,
-  saveShowTracking,
-  addNewsletterToCounter,
-} from "../../lib/redis-storage";
 
-dotenv.config({ path: ".env.local" });
+dotenv.config({ path: ".env" });
 
 function getDateRange(testMode = false) {
   if (testMode) {
@@ -108,6 +100,7 @@ function getShowsForDateRange(startDate: string, endDate: string) {
         title: show.title,
         date: show.date,
         venue: show.venue,
+        venueLink: show.venueLink,
         address: show.address,
         startTime: show.startTime,
         endTime: show.endTime,
@@ -157,78 +150,131 @@ async function makeOpenAICallWithRetry(messages: any, options: any = {}, maxRetr
   }
 }
 
-async function generateNewsletterContent(upcomingShows: any[], futureShows: any[], dateRange: any) {
+function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
   if (upcomingShows.length === 0) {
-    console.log("📭 No upcoming shows, skipping content generation");
-    return null;
+    return "While we don't have shows scheduled for the immediate future, we're working on some amazing performances. Stay tuned for updates on upcoming shows and special events!";
   }
 
-  const showsText = upcomingShows
-    .map(
-      (show) =>
-        `${show.title} at ${show.venue} on ${show.date} (${show.startTime} - ${show.endTime})`
-    )
-    .join("\n");
+  // Get unique venues and show types
+  const venues = [...new Set(upcomingShows.map(show => show.venue))];
+  const hasPrivateEvents = upcomingShows.some(show => 
+    show.venue.toLowerCase().includes('private') || 
+    show.venue.toLowerCase().includes('residence')
+  );
+  const hasPublicVenues = upcomingShows.some(show => 
+    !show.venue.toLowerCase().includes('private') && 
+    !show.venue.toLowerCase().includes('residence')
+  );
+  const hasWellnessEvents = upcomingShows.some(show => 
+    show.description?.toLowerCase().includes('wellness') ||
+    show.description?.toLowerCase().includes('cacao') ||
+    show.description?.toLowerCase().includes('yoga')
+  );
 
-  const futureShowsText = futureShows
-    .slice(0, 5)
-    .map((show) => `${show.title} at ${show.venue} on ${show.date}`)
-    .join("\n");
+  let intro = "";
+  
+  if (upcomingShows.length === 1) {
+    const show = upcomingShows[0];
+    if (show.venue.toLowerCase().includes('private')) {
+      intro = `We have a special private event coming up! ${show.title} is happening ${formatDate(show.date)} at a private location. This intimate gathering promises to be a unique musical experience.`;
+    } else if (show.description?.toLowerCase().includes('wellness')) {
+      intro = `Join us for a wellness-focused musical experience! ${show.title} combines healing sounds with wellness practices on ${formatDate(show.date)} at ${show.venue}. This is perfect for anyone looking to nourish both body and soul.`;
+    } else {
+      intro = `Don't miss our upcoming performance! ${show.title} is happening ${formatDate(show.date)} at ${show.venue}. ${show.description ? show.description.substring(0, 100) + '...' : 'This promises to be an incredible evening of music and connection.'}`;
+    }
+  } else {
+    intro = `We have ${upcomingShows.length} exciting shows coming up this week! `;
+    
+    if (hasWellnessEvents && hasPublicVenues) {
+      intro += "From wellness-focused experiences to public performances, there's something for every mood and preference. ";
+    } else if (hasWellnessEvents) {
+      intro += "These wellness-focused events combine healing practices with live music for a truly transformative experience. ";
+    } else if (hasPrivateEvents && hasPublicVenues) {
+      intro += "We're mixing intimate private gatherings with public performances, offering both exclusive and accessible musical experiences. ";
+    } else if (hasPrivateEvents) {
+      intro += "These intimate private gatherings offer exclusive access to our music in personal, curated settings. ";
+    } else {
+      intro += "Each performance offers a unique blend of sitar, world music, and improvisation. ";
+    }
+    
+    intro += "Check out the details below and join us for these special moments!";
+  }
 
-  const themesPrompt = `Based on these upcoming shows, identify 2-3 key themes or categories that describe the types of performances. Be concise and use 2-4 words per theme.
+  return intro;
+}
 
-Upcoming shows:
-${showsText}
+function generateSpecificThemes(upcomingShows: any[]) {
+  if (upcomingShows.length === 0) {
+    return ["Coming Soon", "Stay Tuned", "Future Performances"];
+  }
 
-Return only the themes separated by commas, no other text.`;
+  const themes = new Set<string>();
+  
+  // Add themes based on show content
+  upcomingShows.forEach(show => {
+    if (show.description?.toLowerCase().includes('sitar')) {
+      themes.add("Sitar Performance");
+    }
+    if (show.description?.toLowerCase().includes('wellness') || 
+        show.description?.toLowerCase().includes('cacao') ||
+        show.description?.toLowerCase().includes('yoga')) {
+      themes.add("Wellness & Music");
+    }
+    if (show.description?.toLowerCase().includes('private') ||
+        show.venue.toLowerCase().includes('private')) {
+      themes.add("Private Events");
+    }
+    if (show.description?.toLowerCase().includes('world music') ||
+        show.description?.toLowerCase().includes('fusion')) {
+      themes.add("World Music Fusion");
+    }
+    if (show.description?.toLowerCase().includes('improvisation') ||
+        show.description?.toLowerCase().includes('jam')) {
+      themes.add("Live Improvisation");
+    }
+  });
 
-  const themesResponse = await makeOpenAICallWithRetry(themesPrompt);
-  const themes = (themesResponse?.choices?.[0]?.message?.content || "")
-    .split(",")
-    .map((theme: string) => theme.trim())
-    .filter((theme: string) => theme.length > 0);
+  // If no specific themes found, add defaults
+  if (themes.size === 0) {
+    themes.add("Live Music");
+    themes.add("Sitar Performance");
+  }
 
-  const introPrompt = `Write a warm, engaging introduction for a weekly newsletter about upcoming music shows. The tone should be friendly and enthusiastic, like talking to friends about exciting events coming up.
+  // Ensure we have 2-3 themes
+  const themeArray = Array.from(themes);
+  if (themeArray.length === 1) {
+    themeArray.push("Live Performance");
+  }
+  if (themeArray.length > 3) {
+    return themeArray.slice(0, 3);
+  }
 
-Upcoming shows this week:
-${showsText}
+  return themeArray;
+}
 
-${futureShows.length > 0 ? `Future shows to look forward to:\n${futureShowsText}` : ""}
-
-Write 2-3 paragraphs that:
-1. Greet the readers warmly
-2. Highlight the exciting shows coming up this week
-3. Build anticipation for the performances
-4. Keep it conversational and engaging
-
-Do not include a greeting like "Hey friends" - that will be added automatically.`;
-
-  const introResponse = await makeOpenAICallWithRetry(introPrompt);
-  const intro = (introResponse?.choices?.[0]?.message?.content || "").trim();
-
-  return {
-    themes,
-    intro,
-  };
+function formatDate(dateString: string) {
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    });
+  } catch (error) {
+    return dateString;
+  }
 }
 
 export async function generateShowNewsletter(
   startDate: string,
   endDate: string,
-  forceRegenerate = false,
   testMode = false
 ) {
   const newsletterId = `${startDate}-to-${endDate}`;
   
   console.log(`📰 Generating show newsletter: ${newsletterId}`);
   console.log(`📅 Date range: ${startDate} to ${endDate}`);
-  console.log(`🔄 Force regenerate: ${forceRegenerate}`);
   console.log(`🧪 Test mode: ${testMode}`);
-
-  if (!forceRegenerate && (await showNewsletterExists(newsletterId))) {
-    console.log(`📰 Newsletter ${newsletterId} already exists, skipping generation`);
-    return await loadShowNewsletter(newsletterId);
-  }
 
   const { upcomingShows, futureShows } = getShowsForDateRange(startDate, endDate);
 
@@ -237,29 +283,21 @@ export async function generateShowNewsletter(
     return null;
   }
 
-  const content = await generateNewsletterContent(upcomingShows, futureShows, {
-    start: startDate,
-    end: endDate,
-  });
-
-  if (!content) {
-    console.log("❌ Failed to generate newsletter content");
-    return null;
-  }
+  // Generate content directly (no OpenAI calls for now - using our smart functions)
+  const content = {
+    themes: generateSpecificThemes(upcomingShows),
+    intro: generateSpecificIntro(upcomingShows, futureShows),
+  };
 
   const newsletter = {
     id: newsletterId,
     generatedAt: new Date().toISOString(),
     dateRange: { start: startDate, end: endDate },
-    sentAt: null,
     intro: content.intro,
     themes: content.themes,
     upcomingShows,
     futureShows: futureShows.slice(0, 5),
   };
-
-  await saveShowNewsletter(newsletterId, newsletter);
-  await addNewsletterToCounter(newsletterId, testMode);
 
   console.log(`✅ Newsletter generated successfully: ${newsletterId}`);
   return newsletter;
@@ -268,14 +306,12 @@ export async function generateShowNewsletter(
 if (require.main === module) {
   const args = process.argv.slice(2);
   const testMode = args.includes("--test");
-  const forceRegenerate = args.includes("--force");
   
   const dateRange = getDateRange(testMode);
   
   generateShowNewsletter(
     dateRange.start,
     dateRange.end,
-    forceRegenerate,
     testMode
   ).then((newsletter) => {
     if (newsletter) {
@@ -283,6 +319,8 @@ if (require.main === module) {
       console.log(`📰 Newsletter ID: ${newsletter.id}`);
       console.log(`🎵 Upcoming shows: ${newsletter.upcomingShows.length}`);
       console.log(`🔮 Future shows: ${newsletter.futureShows?.length || 0}`);
+      console.log(`🎨 Themes: ${newsletter.themes.join(", ")}`);
+      console.log(`📝 Intro preview: ${newsletter.intro.substring(0, 100)}...`);
     } else {
       console.log("📭 No newsletter generated (no upcoming shows)");
     }
