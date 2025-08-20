@@ -246,7 +246,7 @@ export const shows = [
   },
   {
     date: "2025-08-29",
-    title: "High Tide & Sasha Bayan at Wyldflowr Arts",
+    title: "High Tide at Wyldflowr Arts",
     description:
       "Join High Tide featuring Sasha Bayan on sitar for an evening of immersive grooves and improvisational soundscapes at Wyldflowr Arts.",
     venue: "Wyldflowr Arts",
@@ -273,7 +273,7 @@ export const shows = [
   },
   {
     date: "2025-09-05",
-    title: "High Tide & Sasha Bayan at York Street Collective",
+    title: "High Tide at York Street Collective",
     description:
       "High Tide returns to York Street Collective with Sasha Bayan on sitar, fusing world music textures and vibrant improvisation in a unique Mission setting.",
     venue: "York Street Collective",

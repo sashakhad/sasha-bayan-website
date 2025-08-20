@@ -494,7 +494,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                 fontFamily: "Glosa Display, Georgia, Times New Roman, serif",
               }}
             >
-              Want to Book a Show?
+              Got a space, a vibe, or a wild idea?
             </Heading>
             <Text
               style={{
@@ -504,7 +504,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                 lineHeight: "1.5",
               }}
             >
-              I'm available for bookings across various projects and venues. Whether you're looking for solo sitar performances, High Tide's immersive grooves, or other musical collaborations, let's create something special together.
+              I'd love to bring the music there — solo sitar, High Tide grooves, or something new together.
             </Text>
             <Text
               style={{
@@ -513,7 +513,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                 marginBottom: "15px",
               }}
             >
-              Thank you for your support. See you at the shows!
+              Appreciate the love and support. See you out there!
             </Text>
 
             <Text
