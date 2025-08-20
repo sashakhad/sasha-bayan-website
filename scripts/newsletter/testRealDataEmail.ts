@@ -35,51 +35,9 @@ function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
 
   if (upcomingShows.length === 1) {
     const show = upcomingShows[0];
-    if (show.venue.toLowerCase().includes("private")) {
-      intro = `We have a special private event coming up! ${
-        show.title
-      } is happening ${formatDate(
-        show.date,
-      )} at a private location. This intimate gathering promises to be a unique musical experience.`;
-    } else if (show.description?.toLowerCase().includes("wellness")) {
-      intro = `Join us for a wellness-focused musical experience! ${
-        show.title
-      } combines healing sounds with wellness practices on ${formatDate(
-        show.date,
-      )} at ${
-        show.venue
-      }. This is perfect for anyone looking to nourish both body and soul.`;
-    } else {
-      intro = `Don't miss our upcoming performance! ${
-        show.title
-      } is happening ${formatDate(show.date)} at ${show.venue}. ${
-        show.description
-          ? show.description.substring(0, 100) + "..."
-          : "This promises to be an incredible evening of music and connection."
-      }`;
-    }
+    intro = `Hey music lovers,\n\nGot ${upcomingShows.length} show coming up this week. ${show.title} is happening ${formatDate(show.date)}. Check it out below!`;
   } else {
-    intro = `We have ${upcomingShows.length} exciting shows coming up this week! `;
-
-    if (hasWellnessEvents && hasPublicVenues) {
-      intro +=
-        "From wellness-focused experiences to public performances, there's something for every mood and preference. ";
-    } else if (hasWellnessEvents) {
-      intro +=
-        "These wellness-focused events combine healing practices with live music for a truly transformative experience. ";
-    } else if (hasPrivateEvents && hasPublicVenues) {
-      intro +=
-        "We're mixing intimate private gatherings with public performances, offering both exclusive and accessible musical experiences. ";
-    } else if (hasPrivateEvents) {
-      intro +=
-        "These intimate private gatherings offer exclusive access to our music in personal, curated settings. ";
-    } else {
-      intro +=
-        "Each performance offers a unique blend of sitar, world music, and improvisation. ";
-    }
-
-    intro +=
-      "Check out the details below and join us for these special moments!";
+    intro = `Hey music lovers,\n\nGot ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, mostly around California. Scroll down to see what's happening!`;
   }
 
   return intro;

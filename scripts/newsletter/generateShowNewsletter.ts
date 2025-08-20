@@ -195,7 +195,11 @@ function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
 
   if (upcomingShows.length === 1) {
     const show = upcomingShows[0];
-    intro = `Hey music lovers,\n\nGot ${upcomingShows.length} show coming up this week. ${show.title} is happening ${formatDate(show.date)}. Check it out below!`;
+    intro = `Hey music lovers,\n\nGot ${
+      upcomingShows.length
+    } show coming up this week. ${show.title} is happening ${formatDate(
+      show.date,
+    )}. Check it out below!`;
   } else {
     intro = `Hey music lovers,\n\nGot ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, mostly around California. Scroll down to see what's happening!`;
   }
