@@ -107,6 +107,7 @@ function getShowsForDateRange(startDate: string, endDate: string) {
         ticketLink: show.ticketLink,
         note: show.note,
         description: show.description,
+        bandWebsite: show.bandWebsite,
       });
       console.log(`🔮 Found future show: ${show.title} (${show.date})`);
     }
@@ -176,28 +177,28 @@ function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
   if (upcomingShows.length === 1) {
     const show = upcomingShows[0];
     if (show.venue.toLowerCase().includes('private')) {
-      intro = `We have a special private event coming up! ${show.title} is happening ${formatDate(show.date)} at a private location. This intimate gathering promises to be a unique musical experience.`;
+      intro = `I've got a special private event coming up! ${show.title} is happening ${formatDate(show.date)} at a private location. These intimate gatherings always create such unique musical moments.`;
     } else if (show.description?.toLowerCase().includes('wellness')) {
-      intro = `Join us for a wellness-focused musical experience! ${show.title} combines healing sounds with wellness practices on ${formatDate(show.date)} at ${show.venue}. This is perfect for anyone looking to nourish both body and soul.`;
+      intro = `I'm excited to share a wellness-focused musical experience! ${show.title} combines healing sounds with wellness practices on ${formatDate(show.date)} at ${show.venue}. Perfect for anyone looking to nourish both body and soul.`;
     } else {
-      intro = `Don't miss our upcoming performance! ${show.title} is happening ${formatDate(show.date)} at ${show.venue}. ${show.description ? show.description.substring(0, 100) + '...' : 'This promises to be an incredible evening of music and connection.'}`;
+      intro = `I'm looking forward to this one! ${show.title} is happening ${formatDate(show.date)} at ${show.venue}. ${show.description ? show.description.substring(0, 100) + '...' : 'This promises to be an incredible evening of music and connection.'}`;
     }
   } else {
-    intro = `We have ${upcomingShows.length} exciting shows coming up this week! `;
+    intro = `Hey music lovers! `;
     
     if (hasWellnessEvents && hasPublicVenues) {
-      intro += "From wellness-focused experiences to public performances, there's something for every mood and preference. ";
+      intro += `I've got ${upcomingShows.length} diverse shows lined up - from healing wellness sessions to public performances. `;
     } else if (hasWellnessEvents) {
-      intro += "These wellness-focused events combine healing practices with live music for a truly transformative experience. ";
+      intro += `I'm excited to share ${upcomingShows.length} wellness-focused events that blend healing practices with live music. `;
     } else if (hasPrivateEvents && hasPublicVenues) {
-      intro += "We're mixing intimate private gatherings with public performances, offering both exclusive and accessible musical experiences. ";
+      intro += `I'm balancing intimate private gatherings with public performances this week - ${upcomingShows.length} shows that offer both exclusive and accessible musical experiences. `;
     } else if (hasPrivateEvents) {
-      intro += "These intimate private gatherings offer exclusive access to our music in personal, curated settings. ";
+      intro += `I'm hosting ${upcomingShows.length} intimate private gatherings - these exclusive settings offer a personal connection to the music. `;
     } else {
-      intro += "Each performance offers a unique blend of sitar, world music, and improvisation. ";
+      intro += `I'm bringing ${upcomingShows.length} unique performances this week, each with its own blend of sitar, world music, and improvisation. `;
     }
     
-    intro += "Check out the details below and join us for these special moments!";
+    intro += "Scroll down to see what's happening and hopefully catch you at one of these shows!";
   }
 
   return intro;

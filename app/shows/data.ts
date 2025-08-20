@@ -258,6 +258,7 @@ export const shows = [
     endTime: "TBD",
     ticketLink: "TBD",
     note: "Presented by Wyldflowr. Time subject to slight change.",
+    bandWebsite: "https://musicbyhightide.com/",
   },
   {
     date: "2025-08-30",
@@ -284,6 +285,7 @@ export const shows = [
     endTime: "21:00",
     ticketLink: "TBD",
     note: "Join us for an intimate High Tide set at York Street Collective.",
+    bandWebsite: "https://musicbyhightide.com/",
   },
   {
     date: "2025-09-21",

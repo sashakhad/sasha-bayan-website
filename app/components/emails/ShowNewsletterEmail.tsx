@@ -29,6 +29,7 @@ interface ShowNewsletterEmailProps {
       ticketLink?: string;
       note?: string;
       description?: string;
+      bandWebsite?: string;
     }>;
     futureShows?: Array<{
       title: string;
@@ -41,6 +42,7 @@ interface ShowNewsletterEmailProps {
       ticketLink?: string;
       note?: string;
       description?: string;
+      bandWebsite?: string;
     }>;
     intro: string;
     themes: string[];
@@ -245,7 +247,23 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                     color: colors.dark,
                   }}
                 >
-                  {show.title}
+                  {show.title.includes("High Tide") && show.bandWebsite ? (
+                    <>
+                      {show.title.split("High Tide")[0]}
+                      <Link
+                        href={show.bandWebsite}
+                        style={{
+                          color: colors.dark,
+                          textDecoration: "underline",
+                        }}
+                      >
+                        High Tide
+                      </Link>
+                      {show.title.split("High Tide")[1]}
+                    </>
+                  ) : (
+                    show.title
+                  )}
                 </Heading>
 
                 <Text
@@ -397,7 +415,23 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                         color: colors.dark,
                       }}
                     >
-                      {show.title}
+                      {show.title.includes("High Tide") && show.bandWebsite ? (
+                        <>
+                          {show.title.split("High Tide")[0]}
+                          <Link
+                            href={show.bandWebsite}
+                            style={{
+                              color: colors.dark,
+                              textDecoration: "underline",
+                            }}
+                          >
+                            High Tide
+                          </Link>
+                          {show.title.split("High Tide")[1]}
+                        </>
+                      ) : (
+                        show.title
+                      )}
                     </Text>
                     <Text
                       style={{
@@ -451,7 +485,27 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
             }}
           />
 
-          <Section style={{ textAlign: "center", marginBottom: "20px" }}>
+          <Section style={{ textAlign: "center", marginBottom: "30px" }}>
+            <Heading
+              style={{
+                fontSize: "20px",
+                marginBottom: "15px",
+                color: colors.dark,
+                fontFamily: "Glosa Display, Georgia, Times New Roman, serif",
+              }}
+            >
+              Want to Book a Show?
+            </Heading>
+            <Text
+              style={{
+                fontSize: "16px",
+                color: colors.dark,
+                marginBottom: "20px",
+                lineHeight: "1.5",
+              }}
+            >
+              I'm available for bookings across various projects and venues. Whether you're looking for solo sitar performances, High Tide's immersive grooves, or other musical collaborations, let's create something special together.
+            </Text>
             <Text
               style={{
                 fontSize: "14px",
