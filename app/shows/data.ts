@@ -239,7 +239,7 @@ export const shows = [
     title: "High Tide & Sasha Bayan at Wyldflowr Arts",
     description: "Join High Tide featuring Sasha Bayan on sitar for an evening of immersive grooves and improvisational soundscapes at Wyldflowr Arts.",
     venue: "Wyldflowr Arts",
-    address: "1250 Missouri St, San Francisco, CA 94107",
+    address: "809 37th Street, Oakland, CA 94706",
     startTime: "20:00",
     endTime: "TBD",
     ticketLink: "TBD",
