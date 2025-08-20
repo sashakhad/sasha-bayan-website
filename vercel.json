@@ -1,0 +1,10 @@
+{
+  "buildCommand": "pnpm run build",
+  "installCommand": "pnpm install",
+  "crons": [
+    {
+      "path": "/api/newsletter/cron",
+      "schedule": "0 10 * * 1"
+    }
+  ]
+}
