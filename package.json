@@ -12,7 +12,9 @@
     "start": "next start",
     "lint": "next lint",
     "newsletter:generate": "npx tsx scripts/newsletter/generateShowNewsletter.ts",
-    "newsletter:test": "npx tsx scripts/newsletter/testShowNewsletter.ts"
+    "newsletter:test": "npx tsx scripts/newsletter/testShowNewsletter.ts",
+    "newsletter:test-email": "npx tsx scripts/newsletter/testEmailSending.ts",
+    "newsletter:test-real": "npx tsx scripts/newsletter/testRealDataEmail.ts"
   },
   "dependencies": {
     "@react-email/components": "^0.3.2",

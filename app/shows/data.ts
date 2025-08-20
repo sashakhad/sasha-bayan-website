@@ -5,6 +5,7 @@ export const shows = [
     description:
       "Join Ruh y Alma for an evening of soulful world music, featuring Sasha Bayan on sitar and guitar. Experience a fusion of original compositions and improvisations that transcend cultural boundaries.",
     venue: "Curio",
+    venueLink: "https://www.curiobarsf.com/",
     address: "775 Valencia St, San Francisco, CA 94110",
     startTime: "18:00",
     endTime: "21:00",
@@ -27,6 +28,7 @@ export const shows = [
     description:
       "Join Sasha Bayan and Deni Slehiman for a heart-centered evening of cacao, breathwork, and meditative sound at Alchemy Springs. This special Wellness Wednesday session, 'Tuning the Heart,' features Sasha Bayan’s soulful sitar playing—blending Indian classical traditions with improvisation and original compositions. The experience begins with cacao and gentle movement, followed by deep listening and connection in a sacred communal space.",
     venue: "Alchemy Springs",
+    venueLink: "https://alchemysprings.com/",
     address: "939 Post Street, San Francisco, CA 94109",
     startTime: "17:30",
     endTime: "21:00",
@@ -76,6 +78,7 @@ export const shows = [
     description:
       "Join us for an immersive pop-up designed to nourish your mind, body, and soul in a visually stunning, tranquil space. Experience movement, sound healing, and intention-setting sessions, featuring live sitar performances, original compositions, and improvisations by Sasha Bayan.",
     venue: "Zenses Yoga Immersive",
+    venueLink: "https://zenses.com/",
     address: "540 Howard St, San Francisco, CA 94105",
     startTime: "12:00",
     endTime: "6:00",
@@ -102,6 +105,7 @@ export const shows = [
     description:
       "The Tree Temple is honored to welcome you to the next in our Artist Showcase series! This event is our opportunity to share the music we love, made by the friends we love, with the community we love. All friends are welcome to take part in this beautiful musical celebration. The performance will be followed by a very tasty open jam, so bring your instruments, your voices, and your hearts wide open.\n\nRuh y Alma is a musical duo that merges the sounds of sitar, piano, and world music beats. Drawing from their cultural heritages and life experiences, Sasha Bayan and William Cenoté craft compositions and improvisations inspired by Indian, Middle Eastern, and Latin music traditions. Central to their creative process is the belief in music’s therapeutic power, aiming to bring listeners along a journey of self-discovery and healing.",
     venue: "Tree Temple",
+    venueLink: "https://www.treetemple.org/",
     address: "7045 Pinehaven Rd, Oakland, CA",
     startTime: "19:15",
     endTime: "23:30",
@@ -114,6 +118,7 @@ export const shows = [
     description:
       "Experience the potent fusion of live music and freestyle pole artistry at Flux Vertical Theatre. This one-of-a-kind event brings together talented Bay Area musicians and pole dancers in a completely unscripted, improvised neo-soul / RnB jam session. Watch as movement and melody intertwine in real-time, creating a completely unique performance every time.",
     venue: "Flux Vertical Theatre",
+    venueLink: "https://fluxverticaltheatre.com/",
     address: "811 University Ave Suite 105, Berkeley, CA 94710",
     startTime: "21:30",
     endTime: "TBD",
@@ -127,6 +132,7 @@ export const shows = [
     description:
       "A special sitar performance at The Laundry in San Francisco. Join me for an afternoon of music and vibes.",
     venue: "The Laundry",
+    venueLink: "https://www.thelaundrysf.com/",
     address: "3359 26th St, San Francisco, CA 94110",
     note: "Performance between 3-5pm.",
     startTime: "12:00", // 12:00 PM
@@ -156,6 +162,7 @@ export const shows = [
     description:
       "Join us for an evening of sitar, piano, and beats with my duo Ruh y Alma",
     venue: "Kinfolx",
+    venueLink: "https://kinfolx.com/",
     address: "1951 Telegraph Ave, Suite 4, Oakland, CA 94612-2208",
     startTime: "19:30",
     endTime: "22:00", // 10:00 PM
@@ -168,6 +175,7 @@ export const shows = [
     description:
       "Join me at The Center SF for an evening of original compositions, improvisation, and good vibes with my world music fusion band High Tide!",
     venue: "The Center SF",
+    venueLink: "https://thecentersf.com/",
     address: "548 Fillmore St, San Francisco, CA",
     startTime: "19:30", // 7:30pm
     endTime: "21:00", // 9pm
@@ -180,6 +188,7 @@ export const shows = [
     description:
       "Another performance with High Tide -- we’ll close out the evening at Midwinter Magic at the SF Unitarian Center.",
     venue: "SF Unitarian Center",
+    venueLink: "https://www.sfunitarian.org/",
     address: "1187 Franklin St, San Francisco, CA",
     startTime: "19:00", // 7:00pm
     endTime: "02:00", // 2:00am
@@ -192,6 +201,7 @@ export const shows = [
     description:
       "Join me for a special sound healing session with Lisa Rueff at Zense SF. Let’s get our zen on.",
     venue: "Zense SF",
+    venueLink: "https://zenses.com/",
     address: "540 Howard St, San Francisco, CA",
     startTime: "18:30", // 6:30pm
     endTime: "20:00", // 8pm
@@ -204,6 +214,7 @@ export const shows = [
     description:
       "Join us for a magical evening to celebrate Shabe Yalda, the Persian Winter Solstice Festival!",
     venue: "The Laundry",
+    venueLink: "https://www.thelaundrysf.com/",
     address: "3359 26th St, San Francisco, CA 94110",
     startTime: "18:00", // 6:00pm
     endTime: "22:00", // 10pm
@@ -226,56 +237,64 @@ export const shows = [
   {
     date: "2025-08-22",
     title: "Private Event – Solo Sitar with Sasha Bayan",
-    description: "Sasha Bayan performs a solo sitar set featuring original compositions and improvisation at a private event.",
+    description:
+      "Sasha Bayan performs a solo sitar set featuring original compositions and improvisation at a private event.",
     venue: "Private Event",
     address: "N/A",
     startTime: "19:30",
     endTime: "21:30",
     ticketLink: "N/A",
-    note: "Private event – not open to the public."
+    note: "Private event – not open to the public.",
   },
   {
     date: "2025-08-29",
     title: "High Tide & Sasha Bayan at Wyldflowr Arts",
-    description: "Join High Tide featuring Sasha Bayan on sitar for an evening of immersive grooves and improvisational soundscapes at Wyldflowr Arts.",
+    description:
+      "Join High Tide featuring Sasha Bayan on sitar for an evening of immersive grooves and improvisational soundscapes at Wyldflowr Arts.",
     venue: "Wyldflowr Arts",
-    address: "1250 Missouri St, San Francisco, CA 94107",
+    venueLink: "https://wyldflowr.com/",
+    address: "809 37th Street, Oakland, CA 94706",
     startTime: "20:00",
     endTime: "TBD",
     ticketLink: "TBD",
-    note: "Presented by Wyldflowr. Time subject to slight change."
+    note: "Presented by Wyldflowr. Time subject to slight change.",
   },
   {
     date: "2025-08-30",
     title: "Sasha Bayan: Solo Sitar at York Street Collective",
-    description: "Experience Sasha Bayan live at York Street Collective in the Mission with a solo sitar performance blending original compositions, improvisation, and world music traditions.",
+    description:
+      "Experience Sasha Bayan live at York Street Collective in the Mission with a solo sitar performance blending original compositions, improvisation, and world music traditions.",
     venue: "York Street Collective",
+    venueLink: "https://yorkstreetcollective.com/",
     address: "1100 Valencia St, San Francisco, CA 94110",
     startTime: "19:30",
     endTime: "21:30",
     ticketLink: "TBD",
-    note: "Evening event at the York Street Collective space. All ages welcome."
+    note: "Evening event at the York Street Collective space. All ages welcome.",
   },
   {
     date: "2025-09-05",
     title: "High Tide & Sasha Bayan at York Street Collective",
-    description: "High Tide returns to York Street Collective with Sasha Bayan on sitar, fusing worl music textures and vibrant improvisation in a unique Mission setting.",
+    description:
+      "High Tide returns to York Street Collective with Sasha Bayan on sitar, fusing world music textures and vibrant improvisation in a unique Mission setting.",
     venue: "York Street Collective",
+    venueLink: "https://yorkstreetcollective.com/",
     address: "1100 Valencia St, San Francisco, CA 94110",
     startTime: "19:30",
     endTime: "21:00",
     ticketLink: "TBD",
-    note: "Join us for an intimate High Tide set at York Street Collective."
+    note: "Join us for an intimate High Tide set at York Street Collective.",
   },
   {
     date: "2025-09-21",
     title: "Artist Residency – Private Castle Event in France",
-    description: "Sasha Bayan appears as a distinguished artist-in-residence for a private castle gathering in France, offering solo sitar performances, original compositions, and improvisational sessions throughout the week.",
+    description:
+      "Sasha Bayan appears as a distinguished artist-in-residence for a private castle gathering in France, offering solo sitar performances, original compositions, and improvisational sessions throughout the week.",
     venue: "Private Castle Residence",
     address: "France (exact location confidential)",
     startTime: "TBD",
     endTime: "TBD",
     ticketLink: "N/A",
-    note: "Private multi-day event – Sept 21–26, not open to the public."
+    note: "Private multi-day event – Sept 21–26, not open to the public.",
   },
 ];

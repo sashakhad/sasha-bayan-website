@@ -22,6 +22,7 @@ interface ShowNewsletterEmailProps {
       title: string;
       date: string;
       venue: string;
+      venueLink?: string;
       address: string;
       startTime: string;
       endTime: string;
@@ -33,6 +34,7 @@ interface ShowNewsletterEmailProps {
       title: string;
       date: string;
       venue: string;
+      venueLink?: string;
       address: string;
       startTime: string;
       endTime: string;
@@ -46,12 +48,11 @@ interface ShowNewsletterEmailProps {
 }
 
 const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_BASE_URL || "https://sashabayan.com";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://sashabayan.com";
 
   const colors = {
-    primary: "#1a1a1a",
-    cream: "#FEFCF6",
+    primary: "#E8E1DD", // Your Tailwind primary color (cream)
+    dark: "#332A2A", // Your Tailwind dark color
     white: "#FFFFFF",
     gray: "#666666",
     lightGray: "#f5f5f5",
@@ -117,9 +118,9 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
       <Head />
       <Body
         style={{
-          fontFamily: "Georgia, serif",
+          fontFamily: "Akkurat, Arial, Helvetica, sans-serif",
           lineHeight: "1.6",
-          color: colors.primary,
+          color: colors.dark,
           backgroundColor: colors.white,
         }}
       >
@@ -133,14 +134,20 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
         >
           <Section
             style={{
-              background: colors.primary,
-              color: colors.white,
+              background: colors.dark,
+              color: colors.primary,
               padding: "30px 20px",
               textAlign: "center",
               marginBottom: "30px",
             }}
           >
-            <Heading style={{ margin: "0 0 10px 0", fontSize: "32px" }}>
+            <Heading
+              style={{
+                margin: "0 0 10px 0",
+                fontSize: "32px",
+                fontFamily: "Glosa Display, Georgia, Times New Roman, serif",
+              }}
+            >
               Sasha Bayan Shows
             </Heading>
             <Text style={{ margin: "0 0 8px 0", fontSize: "16px" }}>
@@ -156,7 +163,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
               style={{
                 fontSize: "16px",
                 marginBottom: "15px",
-                color: colors.primary,
+                color: colors.dark,
               }}
             >
               Hey music lovers,
@@ -167,7 +174,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                 style={{
                   fontSize: "16px",
                   marginBottom: "15px",
-                  color: colors.primary,
+                  color: colors.dark,
                 }}
               >
                 {paragraph}
@@ -176,7 +183,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
             <Text
               style={{
                 fontSize: "14px",
-                color: colors.primary,
+                color: colors.dark,
                 marginTop: "20px",
                 fontStyle: "italic",
                 textAlign: "left",
@@ -200,7 +207,8 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
               style={{
                 fontSize: "24px",
                 marginBottom: "20px",
-                color: colors.primary,
+                color: colors.dark,
+                fontFamily: "Glosa Display, Georgia, Times New Roman, serif",
               }}
             >
               This Week's Shows
@@ -225,43 +233,56 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                     fontWeight: "bold",
                     marginBottom: "8px",
                     marginTop: "0",
-                    color: colors.primary,
+                    color: colors.dark,
                   }}
                 >
                   {show.title}
                 </Heading>
-                
+
                 <Text
                   style={{
                     fontSize: "16px",
                     marginBottom: "8px",
-                    color: colors.primary,
+                    color: colors.dark,
                     fontWeight: "bold",
                   }}
                 >
                   📅 {formatDate(show.date)}
                 </Text>
-                
+
                 <Text
                   style={{
                     fontSize: "16px",
                     marginBottom: "8px",
-                    color: colors.primary,
+                    color: colors.dark,
                   }}
                 >
                   🕐 {formatTime(show.startTime)} - {formatTime(show.endTime)}
                 </Text>
-                
+
                 <Text
                   style={{
                     fontSize: "16px",
                     marginBottom: "8px",
-                    color: colors.primary,
+                    color: colors.dark,
                   }}
                 >
-                  📍 {show.venue}
+                  📍{" "}
+                  {show.venueLink ? (
+                    <Link
+                      href={show.venueLink}
+                      style={{
+                        color: colors.dark,
+                        textDecoration: "underline",
+                      }}
+                    >
+                      {show.venue}
+                    </Link>
+                  ) : (
+                    show.venue
+                  )}
                 </Text>
-                
+
                 <Text
                   style={{
                     fontSize: "14px",
@@ -277,7 +298,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                     style={{
                       fontSize: "15px",
                       marginBottom: "12px",
-                      color: colors.primary,
+                      color: colors.dark,
                       lineHeight: "1.5",
                     }}
                   >
@@ -298,25 +319,28 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                   </Text>
                 )}
 
-                {show.ticketLink && (
-                  <Text
-                    style={{
-                      fontSize: "16px",
-                      marginBottom: "0",
-                    }}
-                  >
-                    <Link
-                      href={show.ticketLink}
+                {show.ticketLink &&
+                  show.ticketLink !== "N/A" &&
+                  show.ticketLink !== "Private Event" &&
+                  show.ticketLink !== "TBD" && (
+                    <Text
                       style={{
-                        color: colors.primary,
-                        textDecoration: "underline",
-                        fontWeight: "bold",
+                        fontSize: "16px",
+                        marginBottom: "0",
                       }}
                     >
-                      🎫 Get Tickets
-                    </Link>
-                  </Text>
-                )}
+                      <Link
+                        href={show.ticketLink}
+                        style={{
+                          color: colors.dark,
+                          textDecoration: "underline",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        🎫 Get Tickets
+                      </Link>
+                    </Text>
+                  )}
               </div>
             ))}
           </Section>
@@ -334,7 +358,9 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                   style={{
                     fontSize: "22px",
                     marginBottom: "20px",
-                    color: colors.primary,
+                    color: colors.dark,
+                    fontFamily:
+                      "Glosa Display, Georgia, Times New Roman, serif",
                   }}
                 >
                   Coming Up
@@ -343,7 +369,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                   <div
                     key={index}
                     style={{
-                      marginBottom: "15px",
+                      marginBottom: "20px",
                       paddingBottom: "15px",
                       borderBottom:
                         index === (newsletter.futureShows?.length || 0) - 1
@@ -355,8 +381,8 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                       style={{
                         fontSize: "16px",
                         fontWeight: "bold",
-                        marginBottom: "4px",
-                        color: colors.primary,
+                        marginBottom: "6px",
+                        color: colors.dark,
                       }}
                     >
                       {show.title}
@@ -365,10 +391,40 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                       style={{
                         fontSize: "14px",
                         color: colors.gray,
+                        margin: "0 0 4px 0",
+                      }}
+                    >
+                      {formatDate(show.date)}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: "14px",
+                        color: colors.dark,
+                        margin: "0 0 4px 0",
+                      }}
+                    >
+                      {show.venueLink ? (
+                        <Link
+                          href={show.venueLink}
+                          style={{
+                            color: colors.dark,
+                            textDecoration: "underline",
+                          }}
+                        >
+                          {show.venue}
+                        </Link>
+                      ) : (
+                        show.venue
+                      )}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: "13px",
+                        color: colors.gray,
                         margin: "0",
                       }}
                     >
-                      {formatDate(show.date)} at {show.venue}
+                      {show.address}
                     </Text>
                   </div>
                 ))}
@@ -387,7 +443,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
             <Text
               style={{
                 fontSize: "14px",
-                color: colors.primary,
+                color: colors.dark,
                 marginBottom: "15px",
               }}
             >
@@ -416,7 +472,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
             >
               <Link
                 href={`${baseUrl}/shows`}
-                style={{ color: colors.primary, textDecoration: "underline" }}
+                style={{ color: colors.dark, textDecoration: "underline" }}
               >
                 View all shows
               </Link>
@@ -431,7 +487,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
             >
               <Link
                 href={`${baseUrl}/unsubscribe`}
-                style={{ color: colors.primary, textDecoration: "underline" }}
+                style={{ color: colors.dark, textDecoration: "underline" }}
               >
                 Unsubscribe
               </Link>

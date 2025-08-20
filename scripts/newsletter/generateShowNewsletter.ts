@@ -40,18 +40,23 @@ function getDateRange(testMode = false) {
   }
 
   const now = new Date();
-  const dayOfWeek = now.getDay();
-  const daysUntilNextMonday = dayOfWeek === 0 ? 1 : 8 - dayOfWeek;
   
-  const nextMonday = new Date(now);
-  nextMonday.setDate(now.getDate() + daysUntilNextMonday);
+  // Get end of current week (Sunday)
+  const endOfCurrentWeek = new Date(now);
+  const daysUntilSunday = 7 - now.getDay(); // 0 = Sunday, 1 = Monday, etc.
+  endOfCurrentWeek.setDate(now.getDate() + daysUntilSunday);
   
-  const nextSunday = new Date(nextMonday);
-  nextSunday.setDate(nextMonday.getDate() + 6);
+  // Get end of next week (Sunday of next week)
+  const endOfNextWeek = new Date(endOfCurrentWeek);
+  endOfNextWeek.setDate(endOfCurrentWeek.getDate() + 7);
+  
+  console.log(
+    `📅 Newsletter covers: ${now.toISOString().split("T")[0]} to ${endOfNextWeek.toISOString().split("T")[0]} (current + next week)`
+  );
   
   return {
-    start: nextMonday.toISOString().split("T")[0],
-    end: nextSunday.toISOString().split("T")[0],
+    start: now.toISOString().split("T")[0],
+    end: endOfNextWeek.toISOString().split("T")[0],
   };
 }
 
