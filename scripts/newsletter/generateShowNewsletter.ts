@@ -11,20 +11,22 @@ function getDateRange(testMode = false) {
   if (testMode) {
     const now = new Date();
     const randomDate = new Date(
-      now.getTime() + Math.random() * (30 * 24 * 60 * 60 * 1000)
+      now.getTime() + Math.random() * (30 * 24 * 60 * 60 * 1000),
     );
-    
+
     const dayOfWeek = randomDate.getDay();
     const monday = new Date(randomDate);
     monday.setDate(randomDate.getDate() - dayOfWeek + 1);
-    
+
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
-    
+
     console.log(
-      `🎲 Test mode: Generated random week ${monday.toISOString().split("T")[0]} to ${sunday.toISOString().split("T")[0]}`
+      `🎲 Test mode: Generated random week ${
+        monday.toISOString().split("T")[0]
+      } to ${sunday.toISOString().split("T")[0]}`,
     );
-    
+
     return {
       start: monday.toISOString().split("T")[0],
       end: sunday.toISOString().split("T")[0],
@@ -32,20 +34,22 @@ function getDateRange(testMode = false) {
   }
 
   const now = new Date();
-  
+
   // Get end of current week (Sunday)
   const endOfCurrentWeek = new Date(now);
   const daysUntilSunday = 7 - now.getDay(); // 0 = Sunday, 1 = Monday, etc.
   endOfCurrentWeek.setDate(now.getDate() + daysUntilSunday);
-  
+
   // Get end of next week (Sunday of next week)
   const endOfNextWeek = new Date(endOfCurrentWeek);
   endOfNextWeek.setDate(endOfCurrentWeek.getDate() + 7);
-  
+
   console.log(
-    `📅 Newsletter covers: ${now.toISOString().split("T")[0]} to ${endOfNextWeek.toISOString().split("T")[0]} (current + next week)`
+    `📅 Newsletter covers: ${now.toISOString().split("T")[0]} to ${
+      endOfNextWeek.toISOString().split("T")[0]
+    } (current + next week)`,
   );
-  
+
   return {
     start: now.toISOString().split("T")[0],
     end: endOfNextWeek.toISOString().split("T")[0],
@@ -54,14 +58,14 @@ function getDateRange(testMode = false) {
 
 function getShowsForDateRange(startDate: string, endDate: string) {
   const showsPath = path.join(process.cwd(), "app", "shows", "data.ts");
-  
+
   if (!fs.existsSync(showsPath)) {
     console.error("❌ Shows data file not found at:", showsPath);
     return { upcomingShows: [], futureShows: [] };
   }
 
   const showsContent = fs.readFileSync(showsPath, "utf8");
-  
+
   const showsMatch = showsContent.match(/export const shows = (\[[\s\S]*?\]);/);
   if (!showsMatch) {
     console.error("❌ Could not parse shows data from file");
@@ -84,14 +88,18 @@ function getShowsForDateRange(startDate: string, endDate: string) {
   futureEnd.setMonth(futureEnd.getMonth() + 3);
 
   console.log(`🔍 Looking for shows from ${startDate} to ${endDate}`);
-  console.log(`🔮 Looking for future shows from ${futureStart.toISOString().split("T")[0]} to ${futureEnd.toISOString().split("T")[0]}`);
+  console.log(
+    `🔮 Looking for future shows from ${
+      futureStart.toISOString().split("T")[0]
+    } to ${futureEnd.toISOString().split("T")[0]}`,
+  );
 
   const upcomingShows: any[] = [];
   const futureShows: any[] = [];
 
   for (const show of shows) {
     const showDate = new Date(show.date);
-    
+
     if (showDate >= start && showDate <= end) {
       upcomingShows.push(show);
       console.log(`✅ Found upcoming show: ${show.title} (${show.date})`);
@@ -115,14 +123,22 @@ function getShowsForDateRange(startDate: string, endDate: string) {
 
   console.log(`📊 Total upcoming shows: ${upcomingShows.length}`);
   console.log(`📊 Total future shows: ${futureShows.length}`);
-  
+
   return {
-    upcomingShows: upcomingShows.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
-    futureShows: futureShows.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()),
+    upcomingShows: upcomingShows.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    ),
+    futureShows: futureShows.sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+    ),
   };
 }
 
-async function makeOpenAICallWithRetry(messages: any, options: any = {}, maxRetries = 3) {
+async function makeOpenAICallWithRetry(
+  messages: any,
+  options: any = {},
+  maxRetries = 3,
+) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(`🤖 OpenAI call attempt ${attempt}/${maxRetries}`);
@@ -140,7 +156,7 @@ async function makeOpenAICallWithRetry(messages: any, options: any = {}, maxRetr
 
       if (attempt === maxRetries) {
         throw new Error(
-          `OpenAI call failed after ${maxRetries} attempts: ${error.message}`
+          `OpenAI call failed after ${maxRetries} attempts: ${error.message}`,
         );
       }
 
@@ -157,31 +173,50 @@ function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
   }
 
   // Get unique venues and show types
-  const venues = Array.from(new Set(upcomingShows.map(show => show.venue)));
-  const hasPrivateEvents = upcomingShows.some(show => 
-    show.venue.toLowerCase().includes('private') || 
-    show.venue.toLowerCase().includes('residence')
+  const venues = Array.from(new Set(upcomingShows.map((show) => show.venue)));
+  const hasPrivateEvents = upcomingShows.some(
+    (show) =>
+      show.venue.toLowerCase().includes("private") ||
+      show.venue.toLowerCase().includes("residence"),
   );
-  const hasPublicVenues = upcomingShows.some(show => 
-    !show.venue.toLowerCase().includes('private') && 
-    !show.venue.toLowerCase().includes('residence')
+  const hasPublicVenues = upcomingShows.some(
+    (show) =>
+      !show.venue.toLowerCase().includes("private") &&
+      !show.venue.toLowerCase().includes("residence"),
   );
-  const hasWellnessEvents = upcomingShows.some(show => 
-    show.description?.toLowerCase().includes('wellness') ||
-    show.description?.toLowerCase().includes('cacao') ||
-    show.description?.toLowerCase().includes('yoga')
+  const hasWellnessEvents = upcomingShows.some(
+    (show) =>
+      show.description?.toLowerCase().includes("wellness") ||
+      show.description?.toLowerCase().includes("cacao") ||
+      show.description?.toLowerCase().includes("yoga"),
   );
 
   let intro = "";
-  
+
   if (upcomingShows.length === 1) {
     const show = upcomingShows[0];
-    if (show.venue.toLowerCase().includes('private')) {
-      intro = `Hey folks,\n\nI've got a private event coming up that I'm pretty stoked about. ${show.title} is happening ${formatDate(show.date)} at a private location. These intimate gatherings always create such unique musical moments.`;
-    } else if (show.description?.toLowerCase().includes('wellness')) {
-      intro = `Hey hey,\n\nI'm excited to share a wellness-focused musical experience! ${show.title} combines healing sounds with wellness practices on ${formatDate(show.date)} at ${show.venue}. Perfect for anyone looking to nourish both body and soul.`;
+    if (show.venue.toLowerCase().includes("private")) {
+      intro = `Hey folks,\n\nI've got a private event coming up that I'm pretty stoked about. ${
+        show.title
+      } is happening ${formatDate(
+        show.date,
+      )} at a private location. These intimate gatherings always create such unique musical moments.`;
+    } else if (show.description?.toLowerCase().includes("wellness")) {
+      intro = `Hey hey,\n\nI'm excited to share a wellness-focused musical experience! ${
+        show.title
+      } combines healing sounds with wellness practices on ${formatDate(
+        show.date,
+      )} at ${
+        show.venue
+      }. Perfect for anyone looking to nourish both body and soul.`;
     } else {
-      intro = `Hey folks,\n\nI'm looking forward to this one! ${show.title} is happening ${formatDate(show.date)} at ${show.venue}. ${show.description ? show.description.substring(0, 100) + '...' : 'This promises to be an incredible evening of music and connection.'}`;
+      intro = `Hey folks,\n\nI'm looking forward to this one! ${
+        show.title
+      } is happening ${formatDate(show.date)} at ${show.venue}. ${
+        show.description
+          ? show.description.substring(0, 100) + "..."
+          : "This promises to be an incredible evening of music and connection."
+      }`;
     }
   } else {
     if (hasWellnessEvents && hasPublicVenues) {
@@ -206,27 +241,35 @@ function generateSpecificThemes(upcomingShows: any[]) {
   }
 
   const themes = new Set<string>();
-  
+
   // Add themes based on show content
-  upcomingShows.forEach(show => {
-    if (show.description?.toLowerCase().includes('sitar')) {
+  upcomingShows.forEach((show) => {
+    if (show.description?.toLowerCase().includes("sitar")) {
       themes.add("Sitar Performance");
     }
-    if (show.description?.toLowerCase().includes('wellness') || 
-        show.description?.toLowerCase().includes('cacao') ||
-        show.description?.toLowerCase().includes('yoga')) {
+    if (
+      show.description?.toLowerCase().includes("wellness") ||
+      show.description?.toLowerCase().includes("cacao") ||
+      show.description?.toLowerCase().includes("yoga")
+    ) {
       themes.add("Wellness & Music");
     }
-    if (show.description?.toLowerCase().includes('private') ||
-        show.venue.toLowerCase().includes('private')) {
+    if (
+      show.description?.toLowerCase().includes("private") ||
+      show.venue.toLowerCase().includes("private")
+    ) {
       themes.add("Private Events");
     }
-    if (show.description?.toLowerCase().includes('world music') ||
-        show.description?.toLowerCase().includes('fusion')) {
+    if (
+      show.description?.toLowerCase().includes("world music") ||
+      show.description?.toLowerCase().includes("fusion")
+    ) {
       themes.add("World Music Fusion");
     }
-    if (show.description?.toLowerCase().includes('improvisation') ||
-        show.description?.toLowerCase().includes('jam')) {
+    if (
+      show.description?.toLowerCase().includes("improvisation") ||
+      show.description?.toLowerCase().includes("jam")
+    ) {
       themes.add("Live Improvisation");
     }
   });
@@ -265,15 +308,18 @@ function formatDate(dateString: string) {
 export async function generateShowNewsletter(
   startDate: string,
   endDate: string,
-  testMode = false
+  testMode = false,
 ) {
   const newsletterId = `${startDate}-to-${endDate}`;
-  
+
   console.log(`📰 Generating show newsletter: ${newsletterId}`);
   console.log(`📅 Date range: ${startDate} to ${endDate}`);
   console.log(`🧪 Test mode: ${testMode}`);
 
-  const { upcomingShows, futureShows } = getShowsForDateRange(startDate, endDate);
+  const { upcomingShows, futureShows } = getShowsForDateRange(
+    startDate,
+    endDate,
+  );
 
   if (upcomingShows.length === 0) {
     console.log("📭 No upcoming shows found, not generating newsletter");
@@ -303,26 +349,26 @@ export async function generateShowNewsletter(
 if (require.main === module) {
   const args = process.argv.slice(2);
   const testMode = args.includes("--test");
-  
+
   const dateRange = getDateRange(testMode);
-  
-  generateShowNewsletter(
-    dateRange.start,
-    dateRange.end,
-    testMode
-  ).then((newsletter) => {
-    if (newsletter) {
-      console.log("🎉 Newsletter generation completed successfully!");
-      console.log(`📰 Newsletter ID: ${newsletter.id}`);
-      console.log(`🎵 Upcoming shows: ${newsletter.upcomingShows.length}`);
-      console.log(`🔮 Future shows: ${newsletter.futureShows?.length || 0}`);
-      console.log(`🎨 Themes: ${newsletter.themes.join(", ")}`);
-      console.log(`📝 Intro preview: ${newsletter.intro.substring(0, 100)}...`);
-    } else {
-      console.log("📭 No newsletter generated (no upcoming shows)");
-    }
-  }).catch((error) => {
-    console.error("❌ Newsletter generation failed:", error);
-    process.exit(1);
-  });
+
+  generateShowNewsletter(dateRange.start, dateRange.end, testMode)
+    .then((newsletter) => {
+      if (newsletter) {
+        console.log("🎉 Newsletter generation completed successfully!");
+        console.log(`📰 Newsletter ID: ${newsletter.id}`);
+        console.log(`🎵 Upcoming shows: ${newsletter.upcomingShows.length}`);
+        console.log(`🔮 Future shows: ${newsletter.futureShows?.length || 0}`);
+        console.log(`🎨 Themes: ${newsletter.themes.join(", ")}`);
+        console.log(
+          `📝 Intro preview: ${newsletter.intro.substring(0, 100)}...`,
+        );
+      } else {
+        console.log("📭 No newsletter generated (no upcoming shows)");
+      }
+    })
+    .catch((error) => {
+      console.error("❌ Newsletter generation failed:", error);
+      process.exit(1);
+    });
 }
