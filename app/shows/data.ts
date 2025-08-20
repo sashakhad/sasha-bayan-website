@@ -296,4 +296,18 @@ export const shows = [
     ticketLink: "N/A",
     note: "Private multi-day event – Sept 21–26, not open to the public.",
   },
+  {
+    date: "2025-10-03",
+    title: "3RD EAR Presents: High Tide at The Alembic",
+    description:
+      "High Tide brings sitar-led world–jazz fusion to The Berkeley Alembic’s 3RD EAR series—original compositions, meditative textures, and dynamic ensemble interplay.",
+    venue: "The Berkeley Alembic",
+    venueLink: "https://www.berkeleyalembic.org/",
+    address: "2820 Seventh St, Berkeley, CA 94710",
+    startTime: "19:30",
+    endTime: "21:00",
+    ticketLink: "TBD",
+    note: "Part of Alembic’s 3RD EAR series. Doors at 19:00; show at 19:30.",
+    bandWebsite: "https://musicbyhightide.com/",
+  },
 ];
