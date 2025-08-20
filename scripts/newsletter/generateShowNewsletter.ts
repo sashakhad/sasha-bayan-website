@@ -7,6 +7,14 @@ import { openai } from "../../lib/openai-client";
 
 dotenv.config({ path: ".env" });
 
+// Fix timezone issues by parsing dates in PST
+function parseDateAsPST(dateString: string) {
+  // Parse the date string and treat it as a PST date
+  // This ensures that "2024-12-20" represents December 20th in PST, not UTC
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day); // month is 0-indexed in Date constructor
+}
+
 function getDateRange(testMode = false) {
   if (testMode) {
     const now = new Date();
@@ -80,8 +88,9 @@ function getShowsForDateRange(startDate: string, endDate: string) {
     return { upcomingShows: [], futureShows: [] };
   }
 
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  // Use UTC parsing to avoid timezone issues
+  const start = parseDateAsPST(startDate);
+  const end = parseDateAsPST(endDate);
   const futureStart = new Date(end);
   futureStart.setDate(end.getDate() + 1);
   const futureEnd = new Date(futureStart);
@@ -98,7 +107,8 @@ function getShowsForDateRange(startDate: string, endDate: string) {
   const futureShows: any[] = [];
 
   for (const show of shows) {
-    const showDate = new Date(show.date);
+    // Use UTC parsing for show dates to avoid timezone issues
+    const showDate = parseDateAsPST(show.date);
 
     if (showDate >= start && showDate <= end) {
       upcomingShows.push(show);
@@ -126,10 +136,12 @@ function getShowsForDateRange(startDate: string, endDate: string) {
 
   return {
     upcomingShows: upcomingShows.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      (a, b) =>
+        parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
     ),
     futureShows: futureShows.sort(
-      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+      (a, b) =>
+        parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
     ),
   };
 }
@@ -167,31 +179,149 @@ async function makeOpenAICallWithRetry(
   }
 }
 
+async function extractCitiesFromAddresses(shows: any[]) {
+  if (shows.length === 0) {
+    return [];
+  }
+
+  // Filter out shows without valid addresses
+  const showsWithAddresses = shows.filter(
+    (show) =>
+      show.address && show.address !== "N/A" && show.address.trim() !== "",
+  );
+
+  if (showsWithAddresses.length === 0) {
+    return [];
+  }
+
+  try {
+    const addressList = showsWithAddresses
+      .map((show, index) => `${index + 1}. ${show.address}`)
+      .join("\n");
+
+    const prompt = `Extract the city names from these addresses. Return a JSON object with a "cities" array.
+
+Addresses:
+${addressList}
+
+Examples:
+- "123 Main St, Oakland, CA 94610" → "Oakland"
+- "Wyldflowr Arts, 809 37th Street, Oakland, CA" → "Oakland"  
+- "York Street Collective, San Francisco" → "San Francisco"
+- "Private Castle Residence, Bordeaux, France" → "Bordeaux"
+
+Return format: {"cities": ["City1", "City2", ...]}`;
+
+    const response = await makeOpenAICallWithRetry(prompt, {
+      response_format: { type: "json_object" },
+      temperature: 0.1, // Lower temperature for more consistent extraction
+    });
+
+    if (response?.choices?.[0]?.message?.content) {
+      const content = response.choices[0].message.content;
+      // Try to parse as JSON object first, then extract array
+      try {
+        const parsed = JSON.parse(content);
+        if (Array.isArray(parsed)) {
+          return parsed.filter((city: any) => city && typeof city === "string");
+        } else if (parsed.cities && Array.isArray(parsed.cities)) {
+          return parsed.cities.filter(
+            (city: any) => city && typeof city === "string",
+          );
+        }
+      } catch (parseError) {
+        console.warn("🤖 Failed to parse city extraction JSON:", parseError);
+      }
+    }
+
+    // Fallback: try regex extraction
+    console.warn("🤖 AI city extraction failed, using regex fallback");
+    const cities = new Set<string>();
+    showsWithAddresses.forEach((show) => {
+      const cityMatch = show.address.match(/([^,]+),\s*[A-Z]{2}/);
+      if (cityMatch) {
+        cities.add(cityMatch[1].trim());
+      }
+    });
+    return Array.from(cities);
+  } catch (error) {
+    console.warn("🤖 City extraction failed, using regex fallback:", error);
+    // Final fallback: regex extraction
+    const cities = new Set<string>();
+    showsWithAddresses.forEach((show) => {
+      const cityMatch = show.address.match(/([^,]+),\s*[A-Z]{2}/);
+      if (cityMatch) {
+        cities.add(cityMatch[1].trim());
+      }
+    });
+    return Array.from(cities);
+  }
+}
+
 async function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
   if (upcomingShows.length === 0) {
     return "While we don't have shows scheduled for the immediate future, we're working on some amazing performances. Stay tuned for updates on upcoming shows and special events!";
   }
 
   try {
-    const showSummaries = upcomingShows.map(show => ({
-      title: show.title,
-      date: formatDate(show.date),
-      venue: show.venue,
-      type: show.title.includes("High Tide") ? "band" : "solo sitar",
-      location: show.address?.includes("California") ? "California" : "various locations"
-    }));
+    // Use AI to extract cities from addresses
+    const extractedCities = await extractCitiesFromAddresses(upcomingShows);
+    console.log(`🏙️ AI extracted cities: ${extractedCities.join(", ")}`);
+
+    const showSummaries = upcomingShows.map((show) => {
+      // Extract city from this specific show's address
+      let city = "various locations";
+      if (show.address && show.address !== "N/A") {
+        // Try to match the extracted cities first
+        const matchedCity = extractedCities.find((extractedCity) =>
+          show.address.toLowerCase().includes(extractedCity.toLowerCase()),
+        );
+        if (matchedCity) {
+          city = matchedCity;
+        } else {
+          // Fallback to regex extraction for this specific address
+          const cityMatch = show.address.match(/([^,]+),\s*[A-Z]{2}/);
+          if (cityMatch) {
+            city = cityMatch[1].trim();
+          } else {
+            // For addresses like "Somewhere in South Bay", extract the location part
+            city = show.address;
+          }
+        }
+      }
+
+      return {
+        title: show.title,
+        date: formatDate(show.date),
+        venue: show.venue,
+        type: show.title.includes("High Tide") ? "band" : "solo sitar",
+        city: city,
+      };
+    });
+
+    const cityList = extractedCities.join(", ");
+    const locationContext =
+      extractedCities.length > 0
+        ? `around ${cityList}`
+        : "in various locations";
 
     const prompt = `You're Sasha Bayan, a sitar player and musician. Write a casual, friendly intro for your weekly newsletter about upcoming shows.
 
-Context: You have ${upcomingShows.length} show(s) coming up this week.
+Context: You have ${
+      upcomingShows.length
+    } show(s) coming up this week in ${locationContext}.
 
 Show details:
-${showSummaries.map(s => `- ${s.title} (${s.type}) on ${s.date} at ${s.venue}`).join('\n')}
+${showSummaries
+  .map(
+    (s) => `- ${s.title} (${s.type}) on ${s.date} at ${s.venue} in ${s.city}`,
+  )
+  .join("\n")}
 
 Requirements:
-- Start with "Hey music lovers,"
 - Keep it casual and conversational, like you're talking to friends
 - Mention the number of shows and give a brief sense of what's happening
+- Reference the specific cities/locations (${cityList})
 - Don't be overly formal or marketing-y
 - Keep it under 3 sentences
 - Sound natural and excited about your shows
@@ -202,15 +332,33 @@ Write just the intro text:`;
     if (response?.choices?.[0]?.message?.content) {
       return response.choices[0].message.content;
     }
-    return "Hey music lovers, got some shows coming up this week. Check them out below!";
+    return "Got some shows coming up this week. Check them out below!";
   } catch (error) {
     console.warn("🤖 AI intro generation failed, using fallback:", error);
-    // Fallback to simple intro
-    if (upcomingShows.length === 1) {
-      const show = upcomingShows[0];
-      return `Hey music lovers,\n\nGot ${upcomingShows.length} show coming up this week. ${show.title} is happening ${formatDate(show.date)}. Check it out below!`;
-    } else {
-      return `Hey music lovers,\n\nGot ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, mostly around California. Scroll down to see what's happening!`;
+    // Fallback to simple intro - try AI city extraction first, then regex
+    try {
+      const extractedCities = await extractCitiesFromAddresses(upcomingShows);
+      const locationContext =
+        extractedCities.length > 0
+          ? `around ${extractedCities.join(", ")}`
+          : "in various locations";
+
+      if (upcomingShows.length === 1) {
+        const show = upcomingShows[0];
+        const city = extractedCities[0] || "various locations";
+        return `Got ${upcomingShows.length} show coming up this week. ${
+          show.title
+        } is happening ${formatDate(
+          show.date,
+        )} in ${city}. Check it out below!`;
+      } else {
+        return `Got ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, ${locationContext}. Scroll down to see what's happening!`;
+      }
+    } catch (fallbackError) {
+      console.warn("🤖 Fallback city extraction also failed:", fallbackError);
+      return `Got ${upcomingShows.length} show${
+        upcomingShows.length > 1 ? "s" : ""
+      } coming up this week. Check out what's happening below!`;
     }
   }
 }
@@ -274,17 +422,96 @@ function generateSpecificThemes(upcomingShows: any[]) {
 
 function formatDate(dateString: string) {
   try {
-    const date = new Date(dateString);
+    // Use UTC parsing to avoid timezone issues, then format for PST display
+    const date = parseDateAsPST(dateString);
+
+    // Format the date in PST timezone
     return date.toLocaleDateString("en-US", {
       weekday: "long",
       month: "long",
       day: "numeric",
+      timeZone: "America/Los_Angeles", // Explicitly use PST/PDT
     });
   } catch (error) {
     return dateString;
   }
 }
 
+async function generateDynamicSubject(upcomingShows: any[], themes: string[]) {
+  if (upcomingShows.length === 0) {
+    return "Sasha Bayan Shows: Stay Tuned for Updates";
+  }
+
+  // Filter out private events for subject line generation
+  const publicShows = upcomingShows.filter(
+    (show) =>
+      !show.title.toLowerCase().includes("private") &&
+      !show.venue.toLowerCase().includes("private") &&
+      show.address !== "N/A",
+  );
+
+  // If no public shows, use a generic subject
+  if (publicShows.length === 0) {
+    return "Sasha Bayan Shows: This Week's Performances";
+  }
+
+  // Use AI to extract cities from public shows
+  let extractedCities: string[] = [];
+  try {
+    extractedCities = await extractCitiesFromAddresses(publicShows);
+    console.log(`🏙️ Subject line cities: ${extractedCities.join(", ")}`);
+  } catch (error) {
+    console.warn("🤖 City extraction failed for subject line:", error);
+  }
+
+  // Extract show types (only from public shows)
+  const showTypes = new Set<string>();
+  publicShows.forEach((show) => {
+    if (show.title.includes("High Tide")) {
+      showTypes.add("High Tide");
+    } else if (show.title.includes("Solo Sitar")) {
+      showTypes.add("Solo Sitar");
+    } else {
+      showTypes.add("Live Music");
+    }
+  });
+
+  // Generate different subject line patterns
+  const patterns = [
+    // Pattern 1: Theme-based with city context
+    () => {
+      const cityList = extractedCities.slice(0, 2).join(" & ") || "Bay Area";
+      const primaryTheme = themes[0] || "Live Music";
+      return `Sasha Bayan: ${primaryTheme} in ${cityList}`;
+    },
+
+    // Pattern 2: Show count with type
+    () => {
+      const typeList = Array.from(showTypes).slice(0, 2).join(" + ");
+      return `Sasha Bayan: ${publicShows.length} Shows - ${typeList}`;
+    },
+
+    // Pattern 3: Specific show highlight
+    () => {
+      const firstShow = publicShows[0];
+      const city = extractedCities[0] || "Bay Area";
+      return `Sasha Bayan: ${firstShow.title} in ${city}`;
+    },
+
+    // Pattern 4: Date-based with theme
+    () => {
+      const primaryTheme = themes[0] || "Live Music";
+      const cityList = extractedCities.slice(0, 2).join(" & ") || "Bay Area";
+      return `Sasha Bayan: This Week's ${primaryTheme} in ${cityList}`;
+    },
+  ];
+
+  // Randomly select a pattern for variety
+  const randomIndex = Math.floor(Math.random() * patterns.length);
+  return patterns[randomIndex]();
+}
+
+export { generateDynamicSubject };
 export async function generateShowNewsletter(
   startDate: string,
   endDate: string,

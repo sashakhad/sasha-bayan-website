@@ -3,48 +3,18 @@
 import dotenv from "dotenv";
 import { Resend } from "resend";
 import * as React from "react";
+import { shows } from "../../app/shows/data";
 import ShowNewsletterEmail from "../../app/components/emails/ShowNewsletterEmail";
+import { generateDynamicSubject } from "./generateShowNewsletter";
 
 dotenv.config({ path: ".env" });
 
-function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
-  if (upcomingShows.length === 0) {
-    return "While we don't have shows scheduled for the immediate future, we're working on some amazing performances. Stay tuned for updates on upcoming shows and special events!";
-  }
-
-  // Get unique venues and show types
-  const venues = [...new Set(upcomingShows.map((show) => show.venue))];
-  const hasPrivateEvents = upcomingShows.some(
-    (show) =>
-      show.venue.toLowerCase().includes("private") ||
-      show.venue.toLowerCase().includes("residence"),
-  );
-  const hasPublicVenues = upcomingShows.some(
-    (show) =>
-      !show.venue.toLowerCase().includes("private") &&
-      !show.venue.toLowerCase().includes("residence"),
-  );
-  const hasWellnessEvents = upcomingShows.some(
-    (show) =>
-      show.description?.toLowerCase().includes("wellness") ||
-      show.description?.toLowerCase().includes("cacao") ||
-      show.description?.toLowerCase().includes("yoga"),
-  );
-
-  let intro = "";
-
-  if (upcomingShows.length === 1) {
-    const show = upcomingShows[0];
-    intro = `Hey music lovers,\n\nGot ${
-      upcomingShows.length
-    } show coming up this week. ${show.title} is happening ${formatDate(
-      show.date,
-    )}. Check it out below!`;
-  } else {
-    intro = `Hey music lovers,\n\nGot ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, mostly around California. Scroll down to see what's happening!`;
-  }
-
-  return intro;
+// Fix timezone issues by parsing dates in PST
+function parseDateAsPST(dateString: string) {
+  // Parse the date string and treat it as a PST date
+  // This ensures that "2024-12-20" represents December 20th in PST, not UTC
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day); // month is 0-indexed in Date constructor
 }
 
 function generateSpecificThemes(upcomingShows: any[]) {
@@ -106,11 +76,15 @@ function generateSpecificThemes(upcomingShows: any[]) {
 
 function formatDate(dateString: string) {
   try {
-    const date = new Date(dateString);
+    // Use UTC parsing to avoid timezone issues, then format for PST display
+    const date = parseDateAsPST(dateString);
+
+    // Format the date in PST timezone
     return date.toLocaleDateString("en-US", {
       weekday: "long",
       month: "long",
       day: "numeric",
+      timeZone: "America/Los_Angeles", // Explicitly use PST/PDT
     });
   } catch (error) {
     return dateString;
@@ -164,21 +138,27 @@ async function testRealDataEmail() {
     // Filter shows for current week + next week
     const upcomingShows = shows
       .filter((show) => {
-        const showDate = new Date(show.date);
+        const showDate = parseDateAsPST(show.date);
         return showDate >= now && showDate <= endOfNextWeek;
       })
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      .sort(
+        (a, b) =>
+          parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
+      );
 
     // Filter shows for the next 3 months (future shows)
     const futureShows = shows
       .filter((show) => {
-        const showDate = new Date(show.date);
+        const showDate = parseDateAsPST(show.date);
         return (
           showDate > endOfNextWeek &&
           showDate <= new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000)
         );
       })
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .sort(
+        (a, b) =>
+          parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
+      )
       .slice(0, 5); // Limit to 5 future shows
 
     console.log(
@@ -195,7 +175,7 @@ async function testRealDataEmail() {
 
       // Find the next available week with shows
       let weekOffset = 1;
-      let foundShows = [];
+      let foundShows: any[] = [];
 
       while (weekOffset <= 8 && foundShows.length === 0) {
         const startDate = new Date(now);
@@ -204,7 +184,7 @@ async function testRealDataEmail() {
         endDate.setDate(startDate.getDate() + 6);
 
         foundShows = shows.filter((show) => {
-          const showDate = new Date(show.date);
+          const showDate = parseDateAsPST(show.date);
           return showDate >= startDate && showDate <= endDate;
         });
 
@@ -220,7 +200,17 @@ async function testRealDataEmail() {
     }
 
     // Create newsletter with real data
-    const testNewsletter = {
+    // Import the AI-powered intro generation from the main script
+    const { generateShowNewsletter } = await import("./generateShowNewsletter");
+
+    // Generate a proper newsletter with AI intro
+    const fullNewsletter = await generateShowNewsletter(
+      now.toISOString().split("T")[0], // Start date
+      endOfNextWeek.toISOString().split("T")[0], // End date
+      false, // Not test mode
+    );
+
+    const testNewsletter = fullNewsletter || {
       id: "real-data-test",
       generatedAt: new Date().toISOString(),
       dateRange: {
@@ -228,18 +218,16 @@ async function testRealDataEmail() {
         end: endOfNextWeek.toISOString().split("T")[0],
       },
       sentAt: null,
-      intro: generateSpecificIntro(upcomingShows, futureShows),
+      intro: "Got some shows coming up this week. Check them out below!",
       themes: generateSpecificThemes(upcomingShows),
       upcomingShows: upcomingShows.length > 0 ? upcomingShows : [],
       futureShows: futureShows,
     };
 
-    const subject =
-      upcomingShows.length > 0
-        ? `Sasha Bayan Shows: ${upcomingShows.length} Upcoming Performance${
-            upcomingShows.length > 1 ? "s" : ""
-          }`
-        : "Sasha Bayan Shows: Stay Tuned for Updates";
+    const subject = await generateDynamicSubject(
+      upcomingShows,
+      testNewsletter.themes,
+    );
 
     console.log(`📧 Sending test email with REAL data...`);
     console.log(`📤 From: ${fromName} <${fromEmail}>`);
@@ -265,11 +253,12 @@ async function testRealDataEmail() {
       });
     }
 
+    const testEmail = process.env.TEST_EMAIL || "your-email@example.com";
+
     const emailReact = React.createElement(ShowNewsletterEmail, {
       newsletter: testNewsletter,
+      recipientEmail: testEmail,
     });
-
-    const testEmail = process.env.TEST_EMAIL || "your-email@example.com";
 
     // Send single email (not broadcast)
     const emailResponse = await resend.emails.send({

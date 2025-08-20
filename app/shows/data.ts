@@ -238,7 +238,7 @@ export const shows = [
     description:
       "Sasha Bayan performs a solo sitar set featuring original compositions and improvisation at a private event.",
     venue: "Private Event",
-    address: "N/A",
+    address: "Somewhere in South Bay",
     startTime: "19:30",
     endTime: "21:30",
     ticketLink: "N/A",
@@ -255,7 +255,6 @@ export const shows = [
     startTime: "20:00",
     endTime: "TBD",
     ticketLink: "TBD",
-    note: "Presented by Wyldflowr. Time subject to slight change.",
     bandWebsite: "https://musicbyhightide.com/",
   },
   {

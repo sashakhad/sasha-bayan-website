@@ -4,9 +4,11 @@ import { shows } from "./data";
 import ShowCard from "../components/ShowCard";
 import Link from "next/link";
 
-const parseDateAsUTC = (dateString: string) => {
-  // Append "T00:00:00Z" to force UTC parsing.
-  return new Date(`${dateString}T00:00:00Z`);
+const parseDateAsPST = (dateString: string) => {
+  // Parse the date string and treat it as a PST date
+  // This ensures that "2024-12-20" represents December 20th in PST, not UTC
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day); // month is 0-indexed in Date constructor
 };
 
 const ShowsPage = () => {
@@ -14,24 +16,22 @@ const ShowsPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const showsPerPage = 5;
 
-  // Today at midnight UTC
+  // Today at midnight PST
   const now = new Date();
-  const todayUTC = new Date(
-    Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()),
-  );
+  const todayPST = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
   const upcomingShows = shows
-    .filter((show) => parseDateAsUTC(show.date).getTime() >= todayUTC.getTime())
+    .filter((show) => parseDateAsPST(show.date).getTime() >= todayPST.getTime())
     .sort(
       (a, b) =>
-        parseDateAsUTC(a.date).getTime() - parseDateAsUTC(b.date).getTime(),
+        parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
     );
 
   const pastShows = shows
-    .filter((show) => parseDateAsUTC(show.date).getTime() < todayUTC.getTime())
+    .filter((show) => parseDateAsPST(show.date).getTime() < todayPST.getTime())
     .sort(
       (a, b) =>
-        parseDateAsUTC(b.date).getTime() - parseDateAsUTC(a.date).getTime(),
+        parseDateAsPST(b.date).getTime() - parseDateAsPST(a.date).getTime(),
     );
 
   const indexOfLastShow = currentPage * showsPerPage;

@@ -47,9 +47,13 @@ interface ShowNewsletterEmailProps {
     intro: string;
     themes: string[];
   };
+  recipientEmail?: string; // Add recipient email for unsubscribe links
 }
 
-const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
+const ShowNewsletterEmail = ({
+  newsletter,
+  recipientEmail,
+}: ShowNewsletterEmailProps) => {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://sashabayan.com";
 
   const colors = {
@@ -584,7 +588,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
               }}
             >
               <Link
-                href={`${baseUrl}/unsubscribe`}
+                href={`${baseUrl}/unsubscribe?email=${recipientEmail}`}
                 style={{ color: colors.dark, textDecoration: "underline" }}
               >
                 Unsubscribe

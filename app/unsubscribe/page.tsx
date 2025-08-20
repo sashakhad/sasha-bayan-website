@@ -1,14 +1,23 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-export default function MailingListPage() {
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
+export default function UnsubscribePage() {
+  const searchParams = useSearchParams();
+  const emailFromUrl = searchParams.get("email");
+
+  const [email, setEmail] = useState(emailFromUrl || "");
   const [status, setStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("idle");
   const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    if (emailFromUrl) {
+      setEmail(emailFromUrl);
+    }
+  }, [emailFromUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,12 +25,12 @@ export default function MailingListPage() {
     setMessage("");
 
     try {
-      const response = await fetch("/api/newsletter/subscribe", {
+      const response = await fetch("/api/newsletter/unsubscribe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, name }),
+        body: JSON.stringify({ email }),
       });
 
       const data = await response.json();
@@ -29,13 +38,11 @@ export default function MailingListPage() {
       if (response.ok) {
         setStatus("success");
         setMessage(
-          "Successfully subscribed! Check your email for a welcome message.",
+          "Successfully unsubscribed! You won't receive any more emails from us.",
         );
-        setEmail("");
-        setName("");
       } else {
         setStatus("error");
-        setMessage(data.error || "Failed to subscribe. Please try again.");
+        setMessage(data.error || "Failed to unsubscribe. Please try again.");
       }
     } catch (error) {
       setStatus("error");
@@ -45,38 +52,31 @@ export default function MailingListPage() {
 
   return (
     <>
+      <div className="sticky top-0 z-10 -mb-20 flex w-full justify-between bg-primary px-5 py-5 text-sm text-black">
+        <Link href="/">
+          <h4 className="flex items-center text-sm font-thin uppercase tracking-widest transition-all duration-700">
+            Sasha Bayan
+          </h4>
+        </Link>
+      </div>
+
       <div className="flex w-full items-center gap-3 bg-primary pl-7 pt-20 sm:pl-20">
-        <h1 className="font-glosa-display text-5xl text-dark">Mailing List</h1>
+        <h1 className="font-glosa-display text-5xl text-dark">Unsubscribe</h1>
       </div>
 
       <div className="flex min-h-screen w-full justify-center bg-primary px-4 py-8">
         <div className="w-full max-w-md">
           <div className="rounded-lg bg-white p-8 shadow-lg">
-            <h2 className="mb-6 text-2xl font-bold text-dark">Stay Updated</h2>
+            <h2 className="mb-6 text-2xl font-bold text-dark">
+              Unsubscribe from Newsletter
+            </h2>
 
             <p className="mb-6 text-gray-600">
-              Get notified about upcoming shows, new music, and special events.
-              I'll send you a weekly newsletter with all the latest updates.
+              We're sorry to see you go! Enter your email address below to
+              unsubscribe from our newsletter.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-dark"
-                >
-                  Name (optional)
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-dark focus:outline-none focus:ring-dark"
-                  placeholder="Your name"
-                />
-              </div>
-
               <div>
                 <label
                   htmlFor="email"
@@ -100,7 +100,7 @@ export default function MailingListPage() {
                 disabled={status === "loading"}
                 className="w-full rounded-md bg-dark px-4 py-2 text-primary transition-colors duration-200 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-dark focus:ring-offset-2 disabled:opacity-50"
               >
-                {status === "loading" ? "Subscribing..." : "Subscribe"}
+                {status === "loading" ? "Unsubscribing..." : "Unsubscribe"}
               </button>
             </form>
 
@@ -118,8 +118,13 @@ export default function MailingListPage() {
 
             <div className="mt-6 text-center text-sm text-gray-500">
               <p>
-                By subscribing, you agree to receive emails about shows and
-                updates. You can unsubscribe at any time.
+                Changed your mind?{" "}
+                <Link
+                  href="/mailing-list"
+                  className="text-dark hover:underline"
+                >
+                  Resubscribe here
+                </Link>
               </p>
             </div>
           </div>
