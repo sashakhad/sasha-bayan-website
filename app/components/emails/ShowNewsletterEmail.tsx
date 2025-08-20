@@ -362,28 +362,105 @@ const ShowNewsletterEmail = ({
                   </Text>
                 )}
 
-                {show.ticketLink &&
-                  show.ticketLink !== "N/A" &&
-                  show.ticketLink !== "Private Event" &&
-                  show.ticketLink !== "TBD" && (
-                    <Text
-                      style={{
-                        fontSize: "16px",
-                        marginBottom: "0",
-                      }}
-                    >
-                      <Link
-                        href={show.ticketLink}
+                {/* Smart ticket link logic */}
+                {(() => {
+                  const isPrivateEvent =
+                    show.title.toLowerCase().includes("private") ||
+                    show.venue.toLowerCase().includes("private") ||
+                    show.ticketLink === "Private Event";
+
+                  // Hide ticket buttons for private events
+                  if (isPrivateEvent) {
+                    return null;
+                  }
+
+                  // Valid ticket URL
+                  if (
+                    show.ticketLink &&
+                    show.ticketLink !== "N/A" &&
+                    show.ticketLink !== "TBD" &&
+                    show.ticketLink !== "Private Event" &&
+                    show.ticketLink !== "" &&
+                    show.ticketLink.startsWith("http")
+                  ) {
+                    return (
+                      <Text
                         style={{
-                          color: colors.dark,
-                          textDecoration: "underline",
-                          fontWeight: "bold",
+                          fontSize: "16px",
+                          marginBottom: "0",
                         }}
                       >
-                        🎫 Get Tickets
-                      </Link>
-                    </Text>
-                  )}
+                        <Link
+                          href={show.ticketLink}
+                          style={{
+                            color: colors.dark,
+                            textDecoration: "underline",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          🎫 Get Tickets
+                        </Link>
+                      </Text>
+                    );
+                  }
+
+                  // TBD shows
+                  if (show.ticketLink === "TBD") {
+                    return (
+                      <Text
+                        style={{
+                          fontSize: "16px",
+                          marginBottom: "0",
+                        }}
+                      >
+                        <span
+                          style={{ color: colors.gray, fontStyle: "italic" }}
+                        >
+                          🎫 Ticket link not available yet —{" "}
+                        </span>
+                        <Link
+                          href="mailto:booking@sashabayan.com?subject=Ticket Info Request"
+                          style={{
+                            color: colors.dark,
+                            textDecoration: "underline",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          check in with me!
+                        </Link>
+                      </Text>
+                    );
+                  }
+
+                  // Fallback: Contact for info (N/A, empty, or no valid URL)
+                  if (
+                    show.ticketLink === "N/A" ||
+                    !show.ticketLink ||
+                    show.ticketLink === ""
+                  ) {
+                    return (
+                      <Text
+                        style={{
+                          fontSize: "16px",
+                          marginBottom: "0",
+                        }}
+                      >
+                        <Link
+                          href="mailto:booking@sashabayan.com?subject=Show Info Request"
+                          style={{
+                            color: colors.dark,
+                            textDecoration: "underline",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          📧 Contact for Info
+                        </Link>
+                      </Text>
+                    );
+                  }
+
+                  return null;
+                })()}
               </div>
             ))}
           </Section>
@@ -526,7 +603,7 @@ const ShowNewsletterEmail = ({
               style={{
                 fontSize: "16px",
                 color: colors.dark,
-                marginBottom: "20px",
+                marginBottom: "10px",
                 lineHeight: "1.5",
                 fontWeight: "bold",
               }}
@@ -541,6 +618,17 @@ const ShowNewsletterEmail = ({
               >
                 booking@sashabayan.com
               </Link>
+            </Text>
+            <Text
+              style={{
+                fontSize: "16px",
+                color: colors.dark,
+                marginBottom: "20px",
+                lineHeight: "1.5",
+                fontWeight: "bold",
+              }}
+            >
+              💬 Or just reply to this email!
             </Text>
             <Text
               style={{
