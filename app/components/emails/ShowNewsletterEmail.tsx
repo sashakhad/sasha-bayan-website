@@ -96,8 +96,6 @@ const ShowNewsletterEmail = ({
     }
   };
 
-
-
   return (
     <Html lang="en">
       <Head />
@@ -139,20 +137,15 @@ const ShowNewsletterEmail = ({
               Your weekly guide to upcoming performances
             </Text>
             <Text style={{ margin: "0", fontSize: "14px", opacity: "0.8" }}>
-              {formatDateRange(newsletter.dateRange.start, newsletter.dateRange.end)}
+              {formatDateRange(
+                newsletter.dateRange.start,
+                newsletter.dateRange.end,
+              )}
             </Text>
           </Section>
 
           <Section style={{ marginBottom: "30px" }}>
-            <Text
-              style={{
-                fontSize: "16px",
-                marginBottom: "15px",
-                color: colors.dark,
-              }}
-            >
-              Hey music lovers,
-            </Text>
+
             {newsletter.intro.split("\n").map((paragraph, index) => (
               <Text
                 key={index}
@@ -381,18 +374,18 @@ const ShowNewsletterEmail = ({
                         <span
                           style={{ color: colors.gray, fontStyle: "italic" }}
                         >
-                          🎫 Ticket link not available yet —{" "}
+                          🎫 Tickets coming soon —{" "}
+                          <Link
+                            href="mailto:booking@sashabayan.com?subject=Ticket Info Request"
+                            style={{
+                              color: colors.gray,
+                              textDecoration: "underline",
+                              fontWeight: "normal",
+                            }}
+                          >
+                            email for updates
+                          </Link>
                         </span>
-                        <Link
-                          href="mailto:booking@sashabayan.com?subject=Ticket Info Request"
-                          style={{
-                            color: colors.dark,
-                            textDecoration: "underline",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          check in with me!
-                        </Link>
                       </Text>
                     );
                   }
@@ -523,12 +516,115 @@ const ShowNewsletterEmail = ({
                         style={{
                           fontSize: "13px",
                           color: colors.gray,
-                          margin: "0",
+                          margin: "0 0 8px 0",
                         }}
                       >
                         {show.address}
                       </Text>
                     )}
+
+                    {/* Smart ticket link logic for future shows */}
+                    {(() => {
+                      const isPrivateEvent =
+                        show.title.toLowerCase().includes("private") ||
+                        show.venue.toLowerCase().includes("private") ||
+                        show.ticketLink === "Private Event";
+
+                      // Hide ticket buttons for private events
+                      if (isPrivateEvent) {
+                        return null;
+                      }
+
+                      // Valid ticket URL
+                      if (
+                        show.ticketLink &&
+                        show.ticketLink !== "N/A" &&
+                        show.ticketLink !== "TBD" &&
+                        show.ticketLink !== "Private Event" &&
+                        show.ticketLink !== "" &&
+                        show.ticketLink.startsWith("http")
+                      ) {
+                        return (
+                          <Text
+                            style={{
+                              fontSize: "14px",
+                              marginBottom: "0",
+                            }}
+                          >
+                            <Link
+                              href={show.ticketLink}
+                              style={{
+                                color: colors.dark,
+                                textDecoration: "underline",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              🎫 Get Tickets
+                            </Link>
+                          </Text>
+                        );
+                      }
+
+                      // TBD shows
+                      if (show.ticketLink === "TBD") {
+                        return (
+                          <Text
+                            style={{
+                              fontSize: "14px",
+                              marginBottom: "0",
+                            }}
+                          >
+                            <span
+                              style={{
+                                color: colors.gray,
+                                fontStyle: "italic",
+                              }}
+                            >
+                              🎫 Tickets coming soon —{" "}
+                              <Link
+                                href="mailto:booking@sashabayan.com?subject=Ticket Info Request"
+                                style={{
+                                  color: colors.gray,
+                                  textDecoration: "underline",
+                                  fontWeight: "normal",
+                                }}
+                              >
+                                email for updates
+                              </Link>
+                            </span>
+                          </Text>
+                        );
+                      }
+
+                      // Fallback: Contact for info (N/A, empty, or no valid URL)
+                      if (
+                        show.ticketLink === "N/A" ||
+                        !show.ticketLink ||
+                        show.ticketLink === ""
+                      ) {
+                        return (
+                          <Text
+                            style={{
+                              fontSize: "14px",
+                              marginBottom: "0",
+                            }}
+                          >
+                            <Link
+                              href="mailto:booking@sashabayan.com?subject=Show Info Request"
+                              style={{
+                                color: colors.dark,
+                                textDecoration: "underline",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              📧 Contact for Info
+                            </Link>
+                          </Text>
+                        );
+                      }
+
+                      return null;
+                    })()}
                   </div>
                 ))}
               </Section>
