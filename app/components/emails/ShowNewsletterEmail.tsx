@@ -10,6 +10,7 @@ import {
   Link,
   Hr,
 } from "@react-email/components";
+import { formatDateForDisplay, formatDateRange } from "../../../lib/date-utils";
 
 interface ShowNewsletterEmailProps {
   newsletter: {
@@ -64,19 +65,7 @@ const ShowNewsletterEmail = ({
     lightGray: "#f5f5f5",
   };
 
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return date.toLocaleDateString("en-US", {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    } catch (error) {
-      return dateString;
-    }
-  };
+  // Use centralized date utilities for consistent formatting
 
   const formatTime = (timeString: string) => {
     // Handle special cases
@@ -107,31 +96,7 @@ const ShowNewsletterEmail = ({
     }
   };
 
-  const formatDateRange = (dateRange: { start: string; end: string }) => {
-    try {
-      const startDate = new Date(dateRange.start);
-      const endDate = new Date(dateRange.end);
 
-      if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
-        return "This Week";
-      }
-
-      const startMonth = startDate.toLocaleDateString("en-US", {
-        month: "long",
-      });
-      const endMonth = endDate.toLocaleDateString("en-US", { month: "long" });
-      const year = startDate.getFullYear();
-
-      if (startMonth === endMonth) {
-        return `${startMonth} ${startDate.getDate()}-${endDate.getDate()}, ${year}`;
-      } else {
-        return `${startMonth} ${startDate.getDate()} - ${endMonth} ${endDate.getDate()}, ${year}`;
-      }
-    } catch (error) {
-      console.warn("Error formatting date range:", error);
-      return "This Week";
-    }
-  };
 
   return (
     <Html lang="en">
@@ -174,7 +139,7 @@ const ShowNewsletterEmail = ({
               Your weekly guide to upcoming performances
             </Text>
             <Text style={{ margin: "0", fontSize: "14px", opacity: "0.8" }}>
-              {formatDateRange(newsletter.dateRange)}
+              {formatDateRange(newsletter.dateRange.start, newsletter.dateRange.end)}
             </Text>
           </Section>
 
@@ -283,7 +248,7 @@ const ShowNewsletterEmail = ({
                     fontWeight: "bold",
                   }}
                 >
-                  📅 {formatDate(show.date)}
+                  📅 {formatDateForDisplay(show.date)}
                 </Text>
 
                 <Text
@@ -530,7 +495,7 @@ const ShowNewsletterEmail = ({
                         margin: "0 0 4px 0",
                       }}
                     >
-                      {formatDate(show.date)}
+                      {formatDateForDisplay(show.date)}
                     </Text>
                     <Text
                       style={{

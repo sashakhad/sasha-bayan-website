@@ -4,16 +4,18 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import { openai } from "../../lib/openai-client";
+import {
+  parseDateString, 
+  formatDateForDisplay, 
+  getCurrentNewsletterDateRange,
+  getFutureShowsDateRange,
+  isShowInDateRange,
+  formatDateISO
+} from "../../lib/date-utils";
 
 dotenv.config({ path: ".env" });
 
-// Fix timezone issues by parsing dates in PST
-function parseDateAsPST(dateString: string) {
-  // Parse the date string and treat it as a PST date
-  // This ensures that "2024-12-20" represents December 20th in PST, not UTC
-  const [year, month, day] = dateString.split("-").map(Number);
-  return new Date(year, month - 1, day); // month is 0-indexed in Date constructor
-}
+// Use centralized date utilities for consistent formatting
 
 function getDateRange(testMode = false) {
   if (testMode) {
@@ -21,20 +23,20 @@ function getDateRange(testMode = false) {
     const randomDate = new Date(
       now.getTime() + Math.random() * (30 * 24 * 60 * 60 * 1000),
     );
-
+    
     const dayOfWeek = randomDate.getDay();
     const monday = new Date(randomDate);
     monday.setDate(randomDate.getDate() - dayOfWeek + 1);
-
+    
     const sunday = new Date(monday);
     sunday.setDate(monday.getDate() + 6);
-
+    
     console.log(
       `🎲 Test mode: Generated random week ${
         monday.toISOString().split("T")[0]
       } to ${sunday.toISOString().split("T")[0]}`,
     );
-
+    
     return {
       start: monday.toISOString().split("T")[0],
       end: sunday.toISOString().split("T")[0],
@@ -57,7 +59,7 @@ function getDateRange(testMode = false) {
       endOfNextWeek.toISOString().split("T")[0]
     } (current + next week)`,
   );
-
+  
   return {
     start: now.toISOString().split("T")[0],
     end: endOfNextWeek.toISOString().split("T")[0],
@@ -66,14 +68,14 @@ function getDateRange(testMode = false) {
 
 function getShowsForDateRange(startDate: string, endDate: string) {
   const showsPath = path.join(process.cwd(), "app", "shows", "data.ts");
-
+  
   if (!fs.existsSync(showsPath)) {
     console.error("❌ Shows data file not found at:", showsPath);
     return { upcomingShows: [], futureShows: [] };
   }
 
   const showsContent = fs.readFileSync(showsPath, "utf8");
-
+  
   const showsMatch = showsContent.match(/export const shows = (\[[\s\S]*?\]);/);
   if (!showsMatch) {
     console.error("❌ Could not parse shows data from file");
@@ -89,8 +91,8 @@ function getShowsForDateRange(startDate: string, endDate: string) {
   }
 
   // Use UTC parsing to avoid timezone issues
-  const start = parseDateAsPST(startDate);
-  const end = parseDateAsPST(endDate);
+  const start = parseDateString(startDate);
+  const end = parseDateString(endDate);
   const futureStart = new Date(end);
   futureStart.setDate(end.getDate() + 1);
   const futureEnd = new Date(futureStart);
@@ -108,8 +110,8 @@ function getShowsForDateRange(startDate: string, endDate: string) {
 
   for (const show of shows) {
     // Use UTC parsing for show dates to avoid timezone issues
-    const showDate = parseDateAsPST(show.date);
-
+    const showDate = parseDateString(show.date);
+    
     if (showDate >= start && showDate <= end) {
       upcomingShows.push(show);
       console.log(`✅ Found upcoming show: ${show.title} (${show.date})`);
@@ -133,15 +135,15 @@ function getShowsForDateRange(startDate: string, endDate: string) {
 
   console.log(`📊 Total upcoming shows: ${upcomingShows.length}`);
   console.log(`📊 Total future shows: ${futureShows.length}`);
-
+  
   return {
     upcomingShows: upcomingShows.sort(
       (a, b) =>
-        parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
+        parseDateString(a.date).getTime() - parseDateString(b.date).getTime(),
     ),
     futureShows: futureShows.sort(
       (a, b) =>
-        parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
+        parseDateString(a.date).getTime() - parseDateString(b.date).getTime(),
     ),
   };
 }
@@ -273,7 +275,7 @@ async function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
       let city = "various locations";
       if (show.address && show.address !== "N/A") {
         // Try to match the extracted cities first
-        const matchedCity = extractedCities.find((extractedCity) =>
+        const matchedCity = extractedCities.find((extractedCity: string) =>
           show.address.toLowerCase().includes(extractedCity.toLowerCase()),
         );
         if (matchedCity) {
@@ -290,7 +292,7 @@ async function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
         }
       }
 
-      return {
+  return {
         title: show.title,
         date: formatDate(show.date),
         venue: show.venue,
@@ -420,22 +422,8 @@ function generateSpecificThemes(upcomingShows: any[]) {
   return themeArray;
 }
 
-function formatDate(dateString: string) {
-  try {
-    // Use UTC parsing to avoid timezone issues, then format for PST display
-    const date = parseDateAsPST(dateString);
-
-    // Format the date in PST timezone
-    return date.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      timeZone: "America/Los_Angeles", // Explicitly use PST/PDT
-    });
-  } catch (error) {
-    return dateString;
-  }
-}
+// Use centralized date formatting utility
+const formatDate = formatDateForDisplay;
 
 async function generateDynamicSubject(upcomingShows: any[], themes: string[]) {
   if (upcomingShows.length === 0) {
@@ -518,7 +506,7 @@ export async function generateShowNewsletter(
   testMode = false,
 ) {
   const newsletterId = `${startDate}-to-${endDate}`;
-
+  
   console.log(`📰 Generating show newsletter: ${newsletterId}`);
   console.log(`📅 Date range: ${startDate} to ${endDate}`);
   console.log(`🧪 Test mode: ${testMode}`);
@@ -554,26 +542,26 @@ export async function generateShowNewsletter(
 if (require.main === module) {
   const args = process.argv.slice(2);
   const testMode = args.includes("--test");
-
+  
   const dateRange = getDateRange(testMode);
-
+  
   generateShowNewsletter(dateRange.start, dateRange.end, testMode)
     .then((newsletter) => {
-      if (newsletter) {
-        console.log("🎉 Newsletter generation completed successfully!");
-        console.log(`📰 Newsletter ID: ${newsletter.id}`);
-        console.log(`🎵 Upcoming shows: ${newsletter.upcomingShows.length}`);
-        console.log(`🔮 Future shows: ${newsletter.futureShows?.length || 0}`);
+    if (newsletter) {
+      console.log("🎉 Newsletter generation completed successfully!");
+      console.log(`📰 Newsletter ID: ${newsletter.id}`);
+      console.log(`🎵 Upcoming shows: ${newsletter.upcomingShows.length}`);
+      console.log(`🔮 Future shows: ${newsletter.futureShows?.length || 0}`);
         console.log(`🎨 Themes: ${newsletter.themes.join(", ")}`);
         console.log(
           `📝 Intro preview: ${newsletter.intro.substring(0, 100)}...`,
         );
-      } else {
-        console.log("📭 No newsletter generated (no upcoming shows)");
-      }
+    } else {
+      console.log("📭 No newsletter generated (no upcoming shows)");
+    }
     })
     .catch((error) => {
-      console.error("❌ Newsletter generation failed:", error);
-      process.exit(1);
-    });
+    console.error("❌ Newsletter generation failed:", error);
+    process.exit(1);
+  });
 }

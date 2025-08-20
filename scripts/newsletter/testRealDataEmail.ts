@@ -6,16 +6,11 @@ import * as React from "react";
 import { shows } from "../../app/shows/data";
 import ShowNewsletterEmail from "../../app/components/emails/ShowNewsletterEmail";
 import { generateDynamicSubject } from "./generateShowNewsletter";
+import { parseDateString } from "../../lib/date-utils";
 
 dotenv.config({ path: ".env" });
 
-// Fix timezone issues by parsing dates in PST
-function parseDateAsPST(dateString: string) {
-  // Parse the date string and treat it as a PST date
-  // This ensures that "2024-12-20" represents December 20th in PST, not UTC
-  const [year, month, day] = dateString.split("-").map(Number);
-  return new Date(year, month - 1, day); // month is 0-indexed in Date constructor
-}
+// Use centralized date utilities for consistent formatting
 
 function generateSpecificThemes(upcomingShows: any[]) {
   if (upcomingShows.length === 0) {
@@ -77,7 +72,7 @@ function generateSpecificThemes(upcomingShows: any[]) {
 function formatDate(dateString: string) {
   try {
     // Use UTC parsing to avoid timezone issues, then format for PST display
-    const date = parseDateAsPST(dateString);
+    const date = parseDateString(dateString);
 
     // Format the date in PST timezone
     return date.toLocaleDateString("en-US", {
@@ -138,18 +133,18 @@ async function testRealDataEmail() {
     // Filter shows for current week + next week
     const upcomingShows = shows
       .filter((show) => {
-        const showDate = parseDateAsPST(show.date);
+        const showDate = parseDateString(show.date);
         return showDate >= now && showDate <= endOfNextWeek;
       })
       .sort(
         (a, b) =>
-          parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
+          parseDateString(a.date).getTime() - parseDateString(b.date).getTime(),
       );
 
     // Filter shows for the next 3 months (future shows)
     const futureShows = shows
       .filter((show) => {
-        const showDate = parseDateAsPST(show.date);
+        const showDate = parseDateString(show.date);
         return (
           showDate > endOfNextWeek &&
           showDate <= new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000)
@@ -157,7 +152,7 @@ async function testRealDataEmail() {
       })
       .sort(
         (a, b) =>
-          parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
+          parseDateString(a.date).getTime() - parseDateString(b.date).getTime(),
       )
       .slice(0, 5); // Limit to 5 future shows
 
@@ -184,7 +179,7 @@ async function testRealDataEmail() {
         endDate.setDate(startDate.getDate() + 6);
 
         foundShows = shows.filter((show) => {
-          const showDate = parseDateAsPST(show.date);
+          const showDate = parseDateString(show.date);
           return showDate >= startDate && showDate <= endDate;
         });
 

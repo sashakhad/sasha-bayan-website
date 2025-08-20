@@ -1,37 +1,30 @@
 "use client";
 import React, { useState } from "react";
 import { shows } from "./data";
+import { parseDateString, isShowInFuture } from "../../lib/date-utils";
 import ShowCard from "../components/ShowCard";
 import Link from "next/link";
 
-const parseDateAsPST = (dateString: string) => {
-  // Parse the date string and treat it as a PST date
-  // This ensures that "2024-12-20" represents December 20th in PST, not UTC
-  const [year, month, day] = dateString.split("-").map(Number);
-  return new Date(year, month - 1, day); // month is 0-indexed in Date constructor
-};
+// Use centralized date utilities for consistent formatting
 
 const ShowsPage = () => {
   const [showPast, setShowPast] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const showsPerPage = 5;
 
-  // Today at midnight PST
-  const now = new Date();
-  const todayPST = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
+  // Filter shows using centralized date utilities
   const upcomingShows = shows
-    .filter((show) => parseDateAsPST(show.date).getTime() >= todayPST.getTime())
+    .filter((show) => isShowInFuture(show.date))
     .sort(
       (a, b) =>
-        parseDateAsPST(a.date).getTime() - parseDateAsPST(b.date).getTime(),
+        parseDateString(a.date).getTime() - parseDateString(b.date).getTime(),
     );
 
   const pastShows = shows
-    .filter((show) => parseDateAsPST(show.date).getTime() < todayPST.getTime())
+    .filter((show) => !isShowInFuture(show.date))
     .sort(
       (a, b) =>
-        parseDateAsPST(b.date).getTime() - parseDateAsPST(a.date).getTime(),
+        parseDateString(b.date).getTime() - parseDateString(a.date).getTime(),
     );
 
   const indexOfLastShow = currentPage * showsPerPage;
