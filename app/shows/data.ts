@@ -265,7 +265,7 @@ export const shows = [
     description:
       "Experience Sasha Bayan live at York Street Collective in the Mission with a solo sitar performance blending original compositions, improvisation, and world music traditions.",
     venue: "York Street Collective",
-    venueLink: "https://yorkstreetcollective.com/",
+    venueLink: "https://www.yorkstreetsf.com/",
     address: "1100 Valencia St, San Francisco, CA 94110",
     startTime: "19:30",
     endTime: "21:30",
@@ -278,7 +278,7 @@ export const shows = [
     description:
       "High Tide returns to York Street Collective with Sasha Bayan on sitar, fusing world music textures and vibrant improvisation in a unique Mission setting.",
     venue: "York Street Collective",
-    venueLink: "https://yorkstreetcollective.com/",
+    venueLink: "https://www.yorkstreetsf.com/",
     address: "1100 Valencia St, San Francisco, CA 94110",
     startTime: "19:30",
     endTime: "21:00",

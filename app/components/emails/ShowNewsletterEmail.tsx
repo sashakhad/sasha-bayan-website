@@ -270,8 +270,6 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                   {show.endTime && show.endTime !== "TBD" && show.endTime !== "N/A" && (
                     <> - {formatTime(show.endTime)}</>
                   )}
-                  {show.endTime === "TBD" && " (End time TBD)"}
-                  {show.endTime === "N/A" && " (End time TBA)"}
                 </Text>
 
                 <Text
