@@ -320,15 +320,17 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                   )}
                 </Text>
 
-                <Text
-                  style={{
-                    fontSize: "14px",
-                    marginBottom: "12px",
-                    color: colors.gray,
-                  }}
-                >
-                  {show.address}
-                </Text>
+                {show.address && show.address !== "N/A" && (
+                  <Text
+                    style={{
+                      fontSize: "14px",
+                      marginBottom: "12px",
+                      color: colors.gray,
+                    }}
+                  >
+                    {show.address}
+                  </Text>
+                )}
 
                 {show.description && (
                   <Text
@@ -343,7 +345,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                   </Text>
                 )}
 
-                {show.note && (
+                {show.note && show.note !== "N/A" && (
                   <Text
                     style={{
                       fontSize: "14px",
@@ -470,15 +472,17 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                         show.venue
                       )}
                     </Text>
-                    <Text
-                      style={{
-                        fontSize: "13px",
-                        color: colors.gray,
-                        margin: "0",
-                      }}
-                    >
-                      {show.address}
-                    </Text>
+                    {show.address && show.address !== "N/A" && (
+                      <Text
+                        style={{
+                          fontSize: "13px",
+                          color: colors.gray,
+                          margin: "0",
+                        }}
+                      >
+                        {show.address}
+                      </Text>
+                    )}
                   </div>
                 ))}
               </Section>
@@ -523,7 +527,8 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                 fontWeight: "bold",
               }}
             >
-              📧 Email: <Link
+              📧 Email:{" "}
+              <Link
                 href="mailto:booking@sashabayan.com"
                 style={{
                   color: colors.dark,
