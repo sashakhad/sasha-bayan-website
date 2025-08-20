@@ -79,13 +79,18 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
     if (!timeString || timeString === "TBD" || timeString === "N/A") {
       return "TBD";
     }
-    
+
     try {
       const [hours, minutes] = timeString.split(":");
-      if (!hours || !minutes || isNaN(parseInt(hours)) || isNaN(parseInt(minutes))) {
+      if (
+        !hours ||
+        !minutes ||
+        isNaN(parseInt(hours)) ||
+        isNaN(parseInt(minutes))
+      ) {
         return timeString; // Return original if parsing fails
       }
-      
+
       const date = new Date();
       date.setHours(parseInt(hours), parseInt(minutes));
       return date.toLocaleTimeString("en-US", {
@@ -285,9 +290,11 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                   }}
                 >
                   🕐 {formatTime(show.startTime)}
-                  {show.endTime && show.endTime !== "TBD" && show.endTime !== "N/A" && (
-                    <> - {formatTime(show.endTime)}</>
-                  )}
+                  {show.endTime &&
+                    show.endTime !== "TBD" &&
+                    show.endTime !== "N/A" && (
+                      <> - {formatTime(show.endTime)}</>
+                    )}
                 </Text>
 
                 <Text
@@ -504,7 +511,27 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                 lineHeight: "1.5",
               }}
             >
-              I'd love to bring the music there — solo sitar, High Tide grooves, or something new together.
+              I'd love to bring the music there — solo sitar, a full fusion
+              band, or something new together.
+            </Text>
+            <Text
+              style={{
+                fontSize: "16px",
+                color: colors.dark,
+                marginBottom: "20px",
+                lineHeight: "1.5",
+                fontWeight: "bold",
+              }}
+            >
+              📧 Email: <Link
+                href="mailto:booking@sashabayan.com"
+                style={{
+                  color: colors.dark,
+                  textDecoration: "underline",
+                }}
+              >
+                booking@sashabayan.com
+              </Link>
             </Text>
             <Text
               style={{

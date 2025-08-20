@@ -260,7 +260,7 @@ export const shows = [
   },
   {
     date: "2025-08-30",
-    title: "Sasha Bayan: Solo Sitar at York Street Collective",
+    title: "Solo Sitar at York Street Collective",
     description:
       "Experience Sasha Bayan live at York Street Collective in the Mission with a solo sitar performance blending original compositions, improvisation, and world music traditions.",
     venue: "York Street Collective",
