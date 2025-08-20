@@ -157,7 +157,7 @@ function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
   }
 
   // Get unique venues and show types
-  const venues = [...new Set(upcomingShows.map(show => show.venue))];
+  const venues = Array.from(new Set(upcomingShows.map(show => show.venue)));
   const hasPrivateEvents = upcomingShows.some(show => 
     show.venue.toLowerCase().includes('private') || 
     show.venue.toLowerCase().includes('residence')
@@ -177,28 +177,24 @@ function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
   if (upcomingShows.length === 1) {
     const show = upcomingShows[0];
     if (show.venue.toLowerCase().includes('private')) {
-      intro = `I've got a special private event coming up! ${show.title} is happening ${formatDate(show.date)} at a private location. These intimate gatherings always create such unique musical moments.`;
+      intro = `Hey folks,\n\nI've got a private event coming up that I'm pretty stoked about. ${show.title} is happening ${formatDate(show.date)} at a private location. These intimate gatherings always create such unique musical moments.`;
     } else if (show.description?.toLowerCase().includes('wellness')) {
-      intro = `I'm excited to share a wellness-focused musical experience! ${show.title} combines healing sounds with wellness practices on ${formatDate(show.date)} at ${show.venue}. Perfect for anyone looking to nourish both body and soul.`;
+      intro = `Hey hey,\n\nI'm excited to share a wellness-focused musical experience! ${show.title} combines healing sounds with wellness practices on ${formatDate(show.date)} at ${show.venue}. Perfect for anyone looking to nourish both body and soul.`;
     } else {
-      intro = `I'm looking forward to this one! ${show.title} is happening ${formatDate(show.date)} at ${show.venue}. ${show.description ? show.description.substring(0, 100) + '...' : 'This promises to be an incredible evening of music and connection.'}`;
+      intro = `Hey folks,\n\nI'm looking forward to this one! ${show.title} is happening ${formatDate(show.date)} at ${show.venue}. ${show.description ? show.description.substring(0, 100) + '...' : 'This promises to be an incredible evening of music and connection.'}`;
     }
   } else {
-    intro = `Hey music lovers! `;
-    
     if (hasWellnessEvents && hasPublicVenues) {
-      intro += `I've got ${upcomingShows.length} diverse shows lined up - from healing wellness sessions to public performances. `;
+      intro = `Hey folks,\n\nI've got ${upcomingShows.length} diverse shows lined up this week — some healing wellness sessions, some bigger public performances. Details are below if you wanna come hang.`;
     } else if (hasWellnessEvents) {
-      intro += `I'm excited to share ${upcomingShows.length} wellness-focused events that blend healing practices with live music. `;
+      intro = `Hey hey,\n\nI'm out in the wild with ${upcomingShows.length} wellness-focused events this week. These blend healing practices with live music for a truly transformative experience. Scroll down and you'll see what's what.`;
     } else if (hasPrivateEvents && hasPublicVenues) {
-      intro += `I'm balancing intimate private gatherings with public performances this week - ${upcomingShows.length} shows that offer both exclusive and accessible musical experiences. `;
+      intro = `Hey folks,\n\nCouple shows this week I'm stoked about — some small and cozy private gatherings, some bigger and louder public performances. Details are below if you wanna come hang.`;
     } else if (hasPrivateEvents) {
-      intro += `I'm hosting ${upcomingShows.length} intimate private gatherings - these exclusive settings offer a personal connection to the music. `;
+      intro = `Hey hey,\n\nI'm hosting ${upcomingShows.length} intimate private gatherings this week. These exclusive settings offer a personal connection to the music. Scroll down and you'll see what's what.`;
     } else {
-      intro += `I'm bringing ${upcomingShows.length} unique performances this week, each with its own blend of sitar, world music, and improvisation. `;
+      intro = `Hey folks,\n\nI'm bringing ${upcomingShows.length} unique performances this week, each with its own blend of sitar, world music, and improvisation. Details are below if you wanna come hang.`;
     }
-    
-    intro += "Scroll down to see what's happening and hopefully catch you at one of these shows!";
   }
 
   return intro;
