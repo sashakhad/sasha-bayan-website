@@ -73,8 +73,17 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
   };
 
   const formatTime = (timeString: string) => {
+    // Handle special cases
+    if (!timeString || timeString === "TBD" || timeString === "N/A") {
+      return "TBD";
+    }
+    
     try {
       const [hours, minutes] = timeString.split(":");
+      if (!hours || !minutes || isNaN(parseInt(hours)) || isNaN(parseInt(minutes))) {
+        return timeString; // Return original if parsing fails
+      }
+      
       const date = new Date();
       date.setHours(parseInt(hours), parseInt(minutes));
       return date.toLocaleTimeString("en-US", {
@@ -83,7 +92,7 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
         hour12: true,
       });
     } catch (error) {
-      return timeString;
+      return timeString; // Return original if anything goes wrong
     }
   };
 
@@ -257,7 +266,12 @@ const ShowNewsletterEmail = ({ newsletter }: ShowNewsletterEmailProps) => {
                     color: colors.dark,
                   }}
                 >
-                  🕐 {formatTime(show.startTime)} - {formatTime(show.endTime)}
+                  🕐 {formatTime(show.startTime)}
+                  {show.endTime && show.endTime !== "TBD" && show.endTime !== "N/A" && (
+                    <> - {formatTime(show.endTime)}</>
+                  )}
+                  {show.endTime === "TBD" && " (End time TBD)"}
+                  {show.endTime === "N/A" && " (End time TBA)"}
                 </Text>
 
                 <Text
