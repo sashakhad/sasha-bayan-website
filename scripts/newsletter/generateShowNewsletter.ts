@@ -167,44 +167,52 @@ async function makeOpenAICallWithRetry(
   }
 }
 
-function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
+async function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
   if (upcomingShows.length === 0) {
     return "While we don't have shows scheduled for the immediate future, we're working on some amazing performances. Stay tuned for updates on upcoming shows and special events!";
   }
 
-  // Get unique venues and show types
-  const venues = Array.from(new Set(upcomingShows.map((show) => show.venue)));
-  const hasPrivateEvents = upcomingShows.some(
-    (show) =>
-      show.venue.toLowerCase().includes("private") ||
-      show.venue.toLowerCase().includes("residence"),
-  );
-  const hasPublicVenues = upcomingShows.some(
-    (show) =>
-      !show.venue.toLowerCase().includes("private") &&
-      !show.venue.toLowerCase().includes("residence"),
-  );
-  const hasWellnessEvents = upcomingShows.some(
-    (show) =>
-      show.description?.toLowerCase().includes("wellness") ||
-      show.description?.toLowerCase().includes("cacao") ||
-      show.description?.toLowerCase().includes("yoga"),
-  );
+  try {
+    const showSummaries = upcomingShows.map(show => ({
+      title: show.title,
+      date: formatDate(show.date),
+      venue: show.venue,
+      type: show.title.includes("High Tide") ? "band" : "solo sitar",
+      location: show.address?.includes("California") ? "California" : "various locations"
+    }));
 
-  let intro = "";
+    const prompt = `You're Sasha Bayan, a sitar player and musician. Write a casual, friendly intro for your weekly newsletter about upcoming shows.
 
-  if (upcomingShows.length === 1) {
-    const show = upcomingShows[0];
-    intro = `Hey music lovers,\n\nGot ${
-      upcomingShows.length
-    } show coming up this week. ${show.title} is happening ${formatDate(
-      show.date,
-    )}. Check it out below!`;
-  } else {
-    intro = `Hey music lovers,\n\nGot ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, mostly around California. Scroll down to see what's happening!`;
+Context: You have ${upcomingShows.length} show(s) coming up this week.
+
+Show details:
+${showSummaries.map(s => `- ${s.title} (${s.type}) on ${s.date} at ${s.venue}`).join('\n')}
+
+Requirements:
+- Start with "Hey music lovers,"
+- Keep it casual and conversational, like you're talking to friends
+- Mention the number of shows and give a brief sense of what's happening
+- Don't be overly formal or marketing-y
+- Keep it under 3 sentences
+- Sound natural and excited about your shows
+
+Write just the intro text:`;
+
+    const response = await makeOpenAICallWithRetry(prompt);
+    if (response?.choices?.[0]?.message?.content) {
+      return response.choices[0].message.content;
+    }
+    return "Hey music lovers, got some shows coming up this week. Check them out below!";
+  } catch (error) {
+    console.warn("🤖 AI intro generation failed, using fallback:", error);
+    // Fallback to simple intro
+    if (upcomingShows.length === 1) {
+      const show = upcomingShows[0];
+      return `Hey music lovers,\n\nGot ${upcomingShows.length} show coming up this week. ${show.title} is happening ${formatDate(show.date)}. Check it out below!`;
+    } else {
+      return `Hey music lovers,\n\nGot ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, mostly around California. Scroll down to see what's happening!`;
+    }
   }
-
-  return intro;
 }
 
 function generateSpecificThemes(upcomingShows: any[]) {
@@ -298,18 +306,16 @@ export async function generateShowNewsletter(
     return null;
   }
 
-  // Generate content directly (no OpenAI calls for now - using our smart functions)
-  const content = {
-    themes: generateSpecificThemes(upcomingShows),
-    intro: generateSpecificIntro(upcomingShows, futureShows),
-  };
+  // Generate content with AI-powered intro
+  const themes = generateSpecificThemes(upcomingShows);
+  const intro = await generateSpecificIntro(upcomingShows, futureShows);
 
   const newsletter = {
     id: newsletterId,
     generatedAt: new Date().toISOString(),
     dateRange: { start: startDate, end: endDate },
-    intro: content.intro,
-    themes: content.themes,
+    intro,
+    themes,
     upcomingShows,
     futureShows: futureShows.slice(0, 5),
   };

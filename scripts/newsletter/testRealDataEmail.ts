@@ -35,7 +35,11 @@ function generateSpecificIntro(upcomingShows: any[], futureShows: any[]) {
 
   if (upcomingShows.length === 1) {
     const show = upcomingShows[0];
-    intro = `Hey music lovers,\n\nGot ${upcomingShows.length} show coming up this week. ${show.title} is happening ${formatDate(show.date)}. Check it out below!`;
+    intro = `Hey music lovers,\n\nGot ${
+      upcomingShows.length
+    } show coming up this week. ${show.title} is happening ${formatDate(
+      show.date,
+    )}. Check it out below!`;
   } else {
     intro = `Hey music lovers,\n\nGot ${upcomingShows.length} shows coming up this week. Mix of solo sitar and band stuff, mostly around California. Scroll down to see what's happening!`;
   }
@@ -145,18 +149,18 @@ async function testRealDataEmail() {
     // Import real shows data
     const { shows } = await import("../../app/shows/data");
 
-        // Get current date and find shows for current week + next week
+    // Get current date and find shows for current week + next week
     const now = new Date();
-    
+
     // Get end of current week (Sunday)
     const endOfCurrentWeek = new Date(now);
     const daysUntilSunday = 7 - now.getDay(); // 0 = Sunday, 1 = Monday, etc.
     endOfCurrentWeek.setDate(now.getDate() + daysUntilSunday);
-    
+
     // Get end of next week (Sunday of next week)
     const endOfNextWeek = new Date(endOfCurrentWeek);
     endOfNextWeek.setDate(endOfCurrentWeek.getDate() + 7);
-    
+
     // Filter shows for current week + next week
     const upcomingShows = shows
       .filter((show) => {
