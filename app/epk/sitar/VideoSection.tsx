@@ -12,12 +12,12 @@ const reel: Video = {
 };
 
 const soloPerformances: Video[] = [
-  { id: "3PO-0O33MmE", title: "Solo Sitar 1" },
-  { id: "9RJLTiVjCaY", title: "Solo Sitar 2" },
-  { id: "kGqCS62Zqvc", title: "Solo Sitar 3" },
-  { id: "sQle8Lqyj1A", title: "Sitar with Beats 1" },
-  { id: "N7IgSDDpZTc", title: "Sitar with Beats 2" },
-  { id: "VNqu0SZTX1I", title: "Sitar with Beats 3" },
+  { id: "3PO-0O33MmE", title: "First Light" },
+  { id: "9RJLTiVjCaY", title: "Between Notes" },
+  { id: "kGqCS62Zqvc", title: "Long Shadow" },
+  { id: "sQle8Lqyj1A", title: "Soft Circuit" },
+  { id: "N7IgSDDpZTc", title: "Crosscurrent" },
+  { id: "VNqu0SZTX1I", title: "After the Pulse" },
 ];
 
 const existingVideos = [
