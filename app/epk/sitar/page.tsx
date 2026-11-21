@@ -7,7 +7,7 @@ import { GallerySection } from "./GallerySection";
 import { FollowSection } from "./FollowSection";
 import { BookSection } from "./BookSection";
 import { Footer } from "@/app/components/Footer";
-import { VideoSectionEPK } from "./VideoSection";
+import { SitarPerformanceReel, VideoSectionEPK } from "./VideoSection";
 import { AudioSection } from "./AudioSection";
 
 export default function SitarEPKPage() {
@@ -19,6 +19,7 @@ export default function SitarEPKPage() {
           "Classically trained sitarist blending tradition with contemporary artistry"
         }
       />
+      <SitarPerformanceReel />
       <Section
         leftContent={<GallerySection />}
         rightContent={

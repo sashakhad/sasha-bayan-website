@@ -6,11 +6,6 @@ type Video = {
   title: string;
 };
 
-const reel: Video = {
-  id: null,
-  title: "Sasha Bayan — Sitar Performance Reel",
-};
-
 const soloPerformances: Video[] = [
   { id: "3PO-0O33MmE", title: "First Light" },
   { id: "9RJLTiVjCaY", title: "Between Notes" },
@@ -51,6 +46,38 @@ function VideoCard({ id, title }: { id: string; title: string }) {
   );
 }
 
+export function SitarPerformanceReel() {
+  return (
+    <section
+      aria-labelledby="sitar-performance-reel-heading"
+      className="w-full bg-white px-4 pb-10 pt-8 sm:px-6 sm:pb-14 sm:pt-10"
+    >
+      <div className="mx-auto w-full max-w-3xl space-y-4">
+        <h2
+          id="sitar-performance-reel-heading"
+          className="text-center text-2xl font-semibold"
+        >
+          Sitar Performance Reel
+        </h2>
+        <video
+          aria-labelledby="sitar-performance-reel-heading"
+          className="aspect-video w-full rounded-lg bg-black"
+          controls
+          playsInline
+          preload="metadata"
+          poster="/epk/sitar/sitar-performance-reel.webp"
+        >
+          <source
+            src="/epk/sitar/sitar-performance-reel.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support embedded video.
+        </video>
+      </div>
+    </section>
+  );
+}
+
 export function VideoSectionEPK() {
   const [showAll, setShowAll] = useState(false);
   const availableSolos = soloPerformances.filter(
@@ -65,13 +92,6 @@ export function VideoSectionEPK() {
     >
       <h2 className="text-2xl font-semibold">Watch</h2>
 
-      {reel.id && (
-        <div className="w-full space-y-2">
-          <h3 className="text-lg font-semibold">Performance Reel</h3>
-          <VideoPlayer id={reel.id} title={reel.title} />
-        </div>
-      )}
-
       {availableSolos.length > 0 && (
         <div className="w-full space-y-3">
           <h3 className="text-lg font-semibold">Solo Sitar Performances</h3>
@@ -84,7 +104,7 @@ export function VideoSectionEPK() {
       )}
 
       <div className="w-full space-y-3">
-        {(reel.id || availableSolos.length > 0) && (
+        {availableSolos.length > 0 && (
           <h3 className="text-lg font-semibold">More Performances</h3>
         )}
         <div
